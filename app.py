@@ -23,6 +23,8 @@ if "prompt" not in st.session_state:
     2. Write the Methods section as a recipe from the Moosewood Cookbook. (In <moosewood_methods> tags.)
     3. Compose a short poem epistolizing the results in the style of Homer. (In <homer_results> tags.)
     """
+if "word_count" not in st.session_state:
+    st.session_state.word_count = 0
 
 # Title
 st.title("PDF Text Summarizer with Claude 3 LLM")
@@ -38,15 +40,18 @@ if uploaded_file is not None:
     reader = PdfReader(uploaded_file)
     number_of_pages = len(reader.pages)
     text = ''.join(page.extract_text() for page in reader.pages)
-    
+    word_count = len(text.split())
+    st.session_state.word_count = word_count
+
     st.write("Extracted Text:")
     st.write(text[:2000])  # Display the first 2000 characters
+    st.write(f"Word count: {word_count}")
 
     # Holen Sie den API-Schlüssel aus den Streamlit Secrets
     api_key = st.secrets["anthropic_api_key"]
 
     client = Anthropic(api_key=api_key)
-    
+
     # Dropdown menu to choose the model
     model_options = {
         "Claude 3 Opus": "claude-3-opus-20240229",
@@ -60,6 +65,20 @@ if uploaded_file is not None:
 
     # Slider for temperature
     temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
+
+    # Prompt templates
+    prompt_templates = {
+        "Template A": "Prompt text for template A",
+        "Template B": "Prompt text for template B",
+        "Template C": "Prompt text for template C",
+        "Template D": "Prompt text for template D",
+        "Template E": "Prompt text for template E"
+    }
+    template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
+
+    # Set the prompt based on the selected template
+    if st.button("Use Template"):
+        st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
 
     # Editable text area for the prompt
     prompt = st.text_area("Edit the prompt", st.session_state.prompt, height=300, key="prompt")
@@ -88,3 +107,6 @@ if uploaded_file is not None:
         if completion:
             st.write("Summary:")
             st.write(completion)
+
+else:
+    st.write("Word count: 0")
