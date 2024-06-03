@@ -22,14 +22,13 @@ if uploaded_file is not None:
     MODEL_NAME = "claude-3-opus-20240229"
 
     def get_completion(client, prompt):
-        response = client.messages.create(
+        return client.messages.create(
             model=MODEL_NAME,
             max_tokens=2048,
             messages=[{
                 "role": 'user', "content":  prompt
             }]
-        )
-        return response['content']
+        ).content[0].text
 
     if st.button("Generate Summary"):
         completion = get_completion(client,
