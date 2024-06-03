@@ -46,9 +46,9 @@ if uploaded_file is not None:
 
     client = Anthropic(api_key=api_key)
     
-    def get_completion(client, prompt):
+    def get_completion(client, prompt, model_name, max_tokens, temperature):
         return client.messages.create(
-            model=model_options[model_name],
+            model=model_name,
             max_tokens=max_tokens,
             temperature=temperature,
             messages=[{
