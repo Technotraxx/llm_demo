@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 from pypdf import PdfReader
 from anthropic import Anthropic
@@ -44,4 +43,3 @@ if uploaded_file is not None:
         )
         st.write("Summary:")
         st.write(completion)
-```
