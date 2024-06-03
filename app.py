@@ -24,7 +24,7 @@ if uploaded_file is not None:
     model_options = {
         "Claude 3 Opus": "claude-3-opus-20240229",
         "Claude 3 Sonnet": "claude-3-sonnet-20240229",
-        "Claude 3 Haiku": "claude-3-haiku-20240307"
+        "Claude 3 Haiku": "claude-3-haiku-20240307"  # Verify the identifier
     }
     model_name = st.selectbox("Choose a model", list(model_options.keys()))
 
@@ -34,8 +34,8 @@ if uploaded_file is not None:
     # Slider for temperature
     temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=0.9, step=0.1)
 
-    # Default prompt text
-    default_prompt = f"""Here is an academic paper: <paper>{text}</paper>
+    # Default prompt text with {text} placeholder
+    default_prompt = """Here is an academic paper: <paper>{text}</paper>
 
             Please do the following:
             1. Summarize the abstract at a kindergarten reading level. (In <kindergarten_abstract> tags.)
