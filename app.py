@@ -26,12 +26,19 @@ if uploaded_file is not None:
     }
     model_name = st.selectbox("Choose a model", list(model_options.keys()))
 
+    # Slider for max_tokens
+    max_tokens = st.slider("Max Tokens", min_value=0, max_value=4096, value=256, step=256)
+
+    # Slider for temperature
+    temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=0.9, step=0.1)
+
     client = Anthropic(api_key=api_key)
     
     def get_completion(client, prompt):
         return client.messages.create(
             model=model_options[model_name],
-            max_tokens=2048,
+            max_tokens=max_tokens,
+            temperature=temperature,
             messages=[{
                 "role": 'user', "content":  prompt
             }]
