@@ -32,6 +32,18 @@ if uploaded_file is not None:
     # Slider for temperature
     temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=0.9, step=0.1)
 
+    # Default prompt text
+    default_prompt = f"""Here is an academic paper: <paper>{text}</paper>
+
+            Please do the following:
+            1. Summarize the abstract at a kindergarten reading level. (In <kindergarten_abstract> tags.)
+            2. Write the Methods section as a recipe from the Moosewood Cookbook. (In <moosewood_methods> tags.)
+            3. Compose a short poem epistolizing the results in the style of Homer. (In <homer_results> tags.)
+            """
+    
+    # Editable text area for the prompt
+    prompt = st.text_area("Edit the prompt", default_prompt, height=300)
+
     client = Anthropic(api_key=api_key)
     
     def get_completion(client, prompt):
@@ -45,14 +57,10 @@ if uploaded_file is not None:
         ).content[0].text
 
     if st.button("Generate Summary"):
+        # Replacing {text} in the user-edited prompt
+        prompt_with_text = prompt.replace("{text}", text)
         completion = get_completion(client,
-            f"""Here is an academic paper: <paper>{text}</paper>
-
-            Please do the following:
-            1. Summarize the abstract at a kindergarten reading level. (In <kindergarten_abstract> tags.)
-            2. Write the Methods section as a recipe from the Moosewood Cookbook. (In <moosewood_methods> tags.)
-            3. Compose a short poem epistolizing the results in the style of Homer. (In <homer_results> tags.)
-            """
+            prompt_with_text, model_name, max_tokens, temperature
         )
         st.write("Summary:")
         st.write(completion)
