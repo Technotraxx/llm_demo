@@ -4,10 +4,18 @@ from anthropic import Anthropic
 
 # Function to reset session state
 def reset_session_state():
-    st.session_state.uploaded_file = None
+    for key in st.session_state.keys():
+        del st.session_state[key]
+    st.experimental_rerun()
+
+# Initialize session state variables
+if "model_name" not in st.session_state:
     st.session_state.model_name = "Claude 3 Opus"
-    st.session_state.max_tokens = 2048
+if "max_tokens" not in st.session_state:
+    st.session_state.max_tokens = 256
+if "temperature" not in st.session_state:
     st.session_state.temperature = 0.9
+if "prompt" not in st.session_state:
     st.session_state.prompt = """Here is an academic paper: <paper>{text}</paper>
 
     Please do the following:
@@ -16,15 +24,15 @@ def reset_session_state():
     3. Compose a short poem epistolizing the results in the style of Homer. (In <homer_results> tags.)
     """
 
-# Initialize session state variables
-if "uploaded_file" not in st.session_state:
-    reset_session_state()
-
 # Title
 st.title("PDF Text Summarizer with Claude 3 LLM")
 
+# Reset button
+if st.button("Reset"):
+    reset_session_state()
+
 # PDF Upload
-uploaded_file = st.file_uploader("Upload a PDF file", type="pdf", key="uploaded_file")
+uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
 if uploaded_file is not None:
     reader = PdfReader(uploaded_file)
@@ -80,8 +88,3 @@ if uploaded_file is not None:
         if completion:
             st.write("Summary:")
             st.write(completion)
-
-# Reset button
-if st.button("Reset"):
-    reset_session_state()
-    st.experimental_rerun()
