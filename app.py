@@ -1,6 +1,7 @@
 import streamlit as st
 from pypdf import PdfReader
 from anthropic import Anthropic
+from templates import prompt_templates  # Importing the templates
 
 # Function to reset session state
 def reset_session_state():
@@ -12,7 +13,7 @@ def reset_session_state():
 if "model_name" not in st.session_state:
     st.session_state.model_name = "Claude 3 Opus"
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 2048
+    st.session_state.max_tokens = 256
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.9
 if "prompt" not in st.session_state:
@@ -66,14 +67,7 @@ if uploaded_file is not None:
     # Slider for temperature
     temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
 
-    # Prompt templates
-    prompt_templates = {
-        "Template A": "Prompt text for template A",
-        "Template B": "Prompt text for template B",
-        "Template C": "Prompt text for template C",
-        "Template D": "Prompt text for template D",
-        "Template E": "Prompt text for template E"
-    }
+    # Dropdown menu for prompt templates
     template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
 
     # Set the prompt based on the selected template
