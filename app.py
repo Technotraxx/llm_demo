@@ -18,12 +18,19 @@ if uploaded_file is not None:
     # Holen Sie den API-Schlüssel aus den Streamlit Secrets
     api_key = st.secrets["anthropic_api_key"]
 
-    client = Anthropic(api_key=api_key)
-    MODEL_NAME = "claude-3-opus-20240229"
+    # Dropdown menu to choose the model
+    model_options = {
+        "Claude 3 Opus": "claude-3-opus-20240229",
+        "Claude 3 Sonnet": "claude-3-sonnet-20240229",
+        "Claude 3 Haiku": "claude-3-haiku-20240307"
+    }
+    model_name = st.selectbox("Choose a model", list(model_options.keys()))
 
+    client = Anthropic(api_key=api_key)
+    
     def get_completion(client, prompt):
         return client.messages.create(
-            model=MODEL_NAME,
+            model=model_options[model_name],
             max_tokens=2048,
             messages=[{
                 "role": 'user', "content":  prompt
