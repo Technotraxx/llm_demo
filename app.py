@@ -12,7 +12,7 @@ def reset_session_state():
 if "model_name" not in st.session_state:
     st.session_state.model_name = "Claude 3 Opus"
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 256
+    st.session_state.max_tokens = 2048
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.9
 if "prompt" not in st.session_state:
