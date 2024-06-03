@@ -18,6 +18,8 @@ if uploaded_file is not None:
     # Holen Sie den API-Schlüssel aus den Streamlit Secrets
     api_key = st.secrets["anthropic_api_key"]
 
+    client = Anthropic(api_key=api_key)
+    
     # Dropdown menu to choose the model
     model_options = {
         "Claude 3 Opus": "claude-3-opus-20240229",
@@ -44,23 +46,27 @@ if uploaded_file is not None:
     # Editable text area for the prompt
     prompt = st.text_area("Edit the prompt", default_prompt, height=300)
 
-    client = Anthropic(api_key=api_key)
-    
     def get_completion(client, prompt, model_name, max_tokens, temperature):
-        return client.messages.create(
-            model=model_name,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[{
-                "role": 'user', "content":  prompt
-            }]
-        ).content[0].text
+        try:
+            response = client.messages.create(
+                model=model_name,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[{
+                    "role": 'user', "content":  prompt
+                }]
+            )
+            return response.content[0].text
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+            return ""
 
     if st.button("Generate Summary"):
         # Replacing {text} in the user-edited prompt
         prompt_with_text = prompt.replace("{text}", text)
         completion = get_completion(client,
-            prompt_with_text, model_name, max_tokens, temperature
+            prompt_with_text, model_options[model_name], max_tokens, temperature
         )
-        st.write("Summary:")
-        st.write(completion)
+        if completion:
+            st.write("Summary:")
+            st.write(completion)
