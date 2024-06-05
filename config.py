@@ -80,18 +80,21 @@ def create_sidebar():
         "Temperature", 
         min_value=0.0, 
         max_value=1.0, 
-        value=st.session_state.settings["temperature"], 
+        value=st.session_state.settings.get("temperature", 0.7), 
         step=0.1, 
         key="temperature"
     )
+    st.session_state.settings["temperature"] = temperature
+
     max_tokens = st.sidebar.slider(
         "Max Tokens", 
         min_value=1, 
         max_value=8192 if "gemini" in model_name else 4096, 
-        value=st.session_state.settings["max_tokens"], 
+        value=st.session_state.settings.get("max_tokens", 512), 
         step=1, 
         key="max_tokens"
     )
+    st.session_state.settings["max_tokens"] = max_tokens
 
     # Reset-Button in der Sidebar
     if st.sidebar.button("Reset", key="reset_button"):
