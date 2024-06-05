@@ -7,6 +7,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+def reload_page():
+    st.experimental_rerun()
+    
 def save_text(content, filename):
     with open(filename, 'w') as file:
         file.write(content)
