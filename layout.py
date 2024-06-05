@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import reload_page, generate_unique_filename, copy_to_clipboard
+from utils import reload_page, generate_unique_filename
 
 def create_sidebar():
     # Sidebar for model selection und settings
@@ -28,9 +28,22 @@ def create_output_area(summary):
         st.header("Output")
         st.write("Summary:")
         st.write(summary)
-
-        st.button("Copy to Clipboard", on_click=copy_to_clipboard, args=(summary,))
-        st.success("Text copied to clipboard!")
+        
+        # JavaScript code to copy text to clipboard
+        copy_js = f"""
+        <script>
+        function copyToClipboard(text) {{
+            navigator.clipboard.writeText(text).then(function() {{
+                console.log('Text copied to clipboard');
+            }}).catch(function(error) {{
+                console.error('Error copying text: ', error);
+            }});
+        }}
+        </script>
+        <button onclick="copyToClipboard(`{summary}`)">Copy to Clipboard</button>
+        """
+        
+        st.markdown(copy_js, unsafe_allow_html=True)
         
         with st.expander("Save and Send Options"):
             # Save options
