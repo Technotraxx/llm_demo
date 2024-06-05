@@ -10,7 +10,7 @@ def reload_page():
     st.experimental_rerun()
 
 def generate_unique_filename(prefix, extension):
-    timestamp = int(time.time())
+    timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")  # Format: Jahr-Monat-Tag_Stunde-Minute-Sekunde
     unique_id = base64.urlsafe_b64encode(os.urandom(6)).decode('utf-8').rstrip('=')
     return f"{prefix}_{timestamp}_{unique_id}.{extension}"
 
