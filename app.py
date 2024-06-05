@@ -23,7 +23,7 @@ if "api_provider" not in st.session_state:
 if "model_name" not in st.session_state:
     st.session_state.model_name = "claude-3-opus-20240229"
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 512
+    st.session_state.max_tokens = 256
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.7
 if "prompt" not in st.session_state:
@@ -65,7 +65,7 @@ max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gem
 if st.sidebar.button("Reset"):
     st.session_state.api_provider = "Anthropic Claude 3"
     st.session_state.model_name = "claude-3-opus-20240229"
-    st.session_state.max_tokens = 256
+    st.session_state.max_tokens = 512
     st.session_state.temperature = 0.7
     st.session_state.prompt = prompt_templates["Default Template"]
     st.session_state.word_count = 0
