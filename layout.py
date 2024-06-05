@@ -2,7 +2,7 @@ import streamlit as st
 from utils import reload_page
 
 def create_sidebar():
-    # Sidebar for model selection and settings
+    # Sidebar for model selection und settings
     st.sidebar.title("Settings")
     
     model_options = ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"]
@@ -28,10 +28,8 @@ def create_output_area(summary):
         st.header("Output")
         st.write("Summary:")
         st.write(summary)
-
-def create_right_sidebar(summary):
-    with st.expander("Save and Send Options", expanded=True):
-        if summary:
+        
+        with st.expander("Save and Send Options"):
             # Save options
             st.write("Save the summary:")
             if st.button("Save as TXT"):
