@@ -45,10 +45,16 @@ st.session_state.api_provider = api_choice
 # Filter models based on API provider
 if api_choice == "OpenAI GPT-4o":
     model_options = ["gpt-4o", "gpt-3.5-turbo-16k"]
+    if st.session_state.model_name not in model_options:
+        st.session_state.model_name = "gpt-4o"
 elif api_choice == "Anthropic Claude 3":
     model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+    if st.session_state.model_name not in model_options:
+        st.session_state.model_name = "claude-3-opus-20240229"
 elif api_choice == "Google Gemini":
     model_options = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"]
+    if st.session_state.model_name not in model_options:
+        st.session_state.model_name = "gemini-1.5-flash"
 
 model_name = st.sidebar.selectbox("Choose Model", model_options, key="model_name")
 
