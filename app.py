@@ -10,28 +10,31 @@ from layout import create_sidebar, create_main_area, create_output_area
 # Create the sidebar
 create_sidebar()
 
+# API-Auswahl und Modell-Auswahl in der Sidebar
+api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"])
+model_name = ""
+if api_choice == "OpenAI GPT-4o":
+    model_name = st.sidebar.selectbox("Choose Model", openai_models)
+    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
+elif api_choice == "Anthropic Claude 3":
+    model_name = st.sidebar.selectbox("Choose Model", claude_models)
+    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
+elif api_choice == "Google Gemini":
+    model_name = st.sidebar.selectbox("Choose Model", gemini_models)
+    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192, value=2048, step=1)
+
+# Temperatur-Slider in der Sidebar
+temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.1)
+
+# Reset-Button in der Sidebar
+if st.sidebar.button("Reset"):
+    reload_page()
+
 # Create the main area
 uploaded_file = create_main_area()
 
-# Temperatur- und Token-Slider
-temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.1)
-max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
-
 # Prompt-Eingabe
 prompt = st.text_area("Enter your prompt here", "")
-
-# API-Auswahl
-api_choice = st.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"])
-model_name = ""
-if api_choice == "OpenAI GPT-4o":
-    model_name = st.selectbox("Choose Model", openai_models)
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
-elif api_choice == "Anthropic Claude 3":
-    model_name = st.selectbox("Choose Model", claude_models)
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
-elif api_choice == "Google Gemini":
-    model_name = st.selectbox("Choose Model", gemini_models)
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192, value=2048, step=1)
 
 # Prompt-Generierung und Ausgabe
 if api_choice == "OpenAI GPT-4o":
