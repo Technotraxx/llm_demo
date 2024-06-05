@@ -58,7 +58,7 @@ if uploaded_file is not None:
         st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
 
     # Editable text area for the prompt
-    prompt = st.text_area("Edit the prompt", key="prompt", value=st.session_state.prompt, height=300)
+    prompt = st.text_area("Edit the prompt", value=st.session_state.prompt, height=300, key="prompt_text_area")
 
     def get_completion(client, prompt, model_name, max_tokens, temperature):
         try:
@@ -76,8 +76,11 @@ if uploaded_file is not None:
             return ""
 
     if st.button("Generate Summary"):
+        # Update the session state with the edited prompt
+        st.session_state.prompt = st.session_state.prompt_text_area
+
         # Replacing {text} in the user-edited prompt
-        prompt_with_text = prompt.replace("{text}", text)
+        prompt_with_text = st.session_state.prompt.replace("{text}", text)
         completion = get_completion(client,
             prompt_with_text, model_options[model_name], max_tokens, temperature
         )
