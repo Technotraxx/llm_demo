@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import reload_page
+from utils import reload_page, generate_unique_filename
 
 def create_sidebar():
     # Sidebar for model selection und settings
@@ -35,28 +35,36 @@ def create_output_area(summary):
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 if st.button("Save as TXT"):
-                    with open("summary.txt", "w") as file:
+                    filename = generate_unique_filename("summary", "txt")
+                    with open(filename, "w") as file:
                         file.write(summary)
-                    with open("summary.txt", "r") as file:
-                        st.download_button(label="Download TXT", data=file, file_name="summary.txt", mime="text/plain")
-            with col2:
+                    st.success(f"Saved as {filename}")
+                    with open(filename, "r") as file:
+                        st.download_button(label="Download TXT", data=file, file_name=filename, mime="text/plain")
+            with col2
                 if st.button("Save as CSV"):
-                    with open("summary.csv", "w") as file:
+                    filename = generate_unique_filename("summary", "csv")
+                    with open(filename, "w") as file:
                         file.write(summary)
-                    with open("summary.csv", "r") as file:
-                        st.download_button(label="Download CSV", data=file, file_name="summary.csv", mime="text/csv")
+                    st.success(f"Saved as {filename}")
+                    with open(filename, "r") as file:
+                        st.download_button(label="Download CSV", data=file, file_name=filename, mime="text/csv")
             with col3:
                 if st.button("Save as DOC"):
-                    with open("summary.docx", "w") as file:
+                    filename = generate_unique_filename("summary", "docx")
+                    with open(filename, "w") as file:
                         file.write(summary)
-                    with open("summary.docx", "rb") as file:
-                        st.download_button(label="Download DOC", data=file, file_name="summary.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                    st.success(f"Saved as {filename}")
+                    with open(filename, "rb") as file:
+                        st.download_button(label="Download DOC", data=file, file_name=filename, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             with col4:
                 if st.button("Save as XLS"):
-                    with open("summary.xlsx", "w") as file:
+                    filename = generate_unique_filename("summary", "xlsx")
+                    with open(filename, "w") as file:
                         file.write(summary)
-                    with open("summary.xlsx", "rb") as file:
-                        st.download_button(label="Download XLS", data=file, file_name="summary.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    st.success(f"Saved as {filename}")
+                    with open(filename, "rb") as file:
+                        st.download_button(label="Download XLS", data=file, file_name=filename, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
             # Email option
             st.write("Send the summary via email:")
