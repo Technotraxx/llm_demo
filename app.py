@@ -1,13 +1,15 @@
 import streamlit as st
-from openai import OpenAI
+import openai
 import anthropic
 
 # Set the API keys
-openai_api_key = st.secrets.get("openai_api_key", "YOUR_OPENAI_API_KEY")
-claude_api_key = st.secrets.get("anthropic_api_key", "YOUR_ANTHROPIC_API_KEY")
+openai_api_key = st.secrets.get("openai_api_key")
+claude_api_key = st.secrets.get("anthropic_api_key")
 
-# API Client Initialisierung
-openai_client = OpenAI(api_key=openai_api_key)
+# Initialize the OpenAI client
+openai.api_key = openai_api_key
+
+# Initialize the Claude 3 client
 claude_client = anthropic.Anthropic(api_key=claude_api_key)
 
 # Auswahl der API
@@ -15,11 +17,11 @@ api_choice = st.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Cl
 
 if api_choice == "OpenAI GPT-4o":
     if st.button("Get GPT-4o Response"):
-        completion = openai_client.chat.completions.create(
+        completion = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": "Hello there!"}
+                {"role": "system", "content": "You are a helpful assistant. Help me with my math homework!"},
+                {"role": "user", "content": "Hello! Could you solve 2+2?"}
             ]
         )
         st.write("Assistant: " + completion.choices[0].message["content"])
@@ -33,4 +35,4 @@ elif api_choice == "Anthropic Claude 3":
                 {"role": "user", "content": "Hello there!"}
             ]
         )
-        st.write("Claude 3 Response: " + message.messages[0]["content"])
+        st.write("Claude 3 Response: " + message['completion'])
