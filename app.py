@@ -65,6 +65,7 @@ max_tokens = st.sidebar.slider(
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset", key="reset_button"):
     reset_session_state()
+    # UI wird automatisch aktualisiert, keine Notwendigkeit für st.experimental_rerun()
 
 # Create main area
 uploaded_file = create_main_area()
