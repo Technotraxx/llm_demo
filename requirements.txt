@@ -1,6 +1,7 @@
 streamlit
 pypdf
 anthropic
+openai
 python-docx
 pandas
 openpyxl
