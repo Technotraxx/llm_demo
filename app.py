@@ -28,11 +28,11 @@ elif api_choice == "Google Gemini":
     settings = get_gemini_settings(model_name)
 
 # Einstellungsoptionen
-temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=settings["default_temperature"])
-max_tokens = st.slider("Max Tokens", min_value=1, max_value=settings["max_output_tokens"], value=settings["default_max_tokens"])
-top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=settings.get("default_top_p", 1.0))
-frequency_penalty = st.slider("Frequency Penalty", min_value=0.0, max_value=2.0, value=settings.get("default_frequency_penalty", 0.0))
-presence_penalty = st.slider("Presence Penalty", min_value=0.0, max_value=2.0, value=settings.get("default_presence_penalty", 0.0))
+temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=settings["default_temperature"], step=0.1)
+max_tokens = st.slider("Max Tokens", min_value=1, max_value=settings["max_output_tokens"], value=settings["default_max_tokens"], step=1)
+top_p = st.slider("Top P", min_value=0.0, max_value=1.0, value=settings.get("default_top_p", 1.0), step=0.1)
+frequency_penalty = st.slider("Frequency Penalty", min_value=0.0, max_value=2.0, value=settings.get("default_frequency_penalty", 0.0), step=0.1)
+presence_penalty = st.slider("Presence Penalty", min_value=0.0, max_value=2.0, value=settings.get("default_presence_penalty", 0.0), step=0.1)
 
 # Prompt-Eingabe
 prompt = st.text_area("Enter your prompt here", "")
