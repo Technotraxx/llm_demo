@@ -25,16 +25,45 @@ initialize_session_state()
 create_sidebar()
 
 # Model and API selection
-api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"], key="api_provider")
+api_choice_index = st.session_state.settings.get("api_provider_index", 1)
+api_choice = st.sidebar.selectbox(
+    "Choose API Provider",
+    ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"],
+    index=api_choice_index,
+    key="api_provider"
+)
+st.session_state.settings["api_provider_index"] = ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"].index(api_choice)
+
 model_options = filter_models(api_choice)
-model_name = st.sidebar.selectbox("Choose Model", model_options, key="model_name")
+model_name_index = st.session_state.settings.get("model_name_index", 0)
+model_name = st.sidebar.selectbox(
+    "Choose Model",
+    model_options,
+    index=model_name_index,
+    key="model_name"
+)
+st.session_state.settings["model_name_index"] = model_options.index(model_name)
 
 # Einstellungsoptionen
-temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.settings["temperature"], step=0.1, key="temperature")
-max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gemini" in model_name else 4096, value=st.session_state.settings["max_tokens"], step=1, key="max_tokens")
+temperature = st.sidebar.slider(
+    "Temperature", 
+    min_value=0.0, 
+    max_value=1.0, 
+    value=st.session_state.settings["temperature"], 
+    step=0.1, 
+    key="temperature"
+)
+max_tokens = st.sidebar.slider(
+    "Max Tokens", 
+    min_value=1, 
+    max_value=8192 if "gemini" in model_name else 4096, 
+    value=st.session_state.settings["max_tokens"], 
+    step=1, 
+    key="max_tokens"
+)
 
 # Reset-Button in der Sidebar
-if st.sidebar.button("Reset"):
+if st.sidebar.button("Reset", key="reset_button"):
     reset_session_state()
 
 # Create main area
