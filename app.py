@@ -50,25 +50,19 @@ if "text" in st.session_state and st.session_state.text:
     with st.expander(f"Extracted Text (Word count: {st.session_state.word_count}):"):
         st.write(st.session_state.text[:2000])  # Display the first 2000 characters
 
-api_provider = st.selectbox("Choose API Provider", ["Anthropic Claude 3", "OpenAI GPT-4o"], key="api_provider")
+api_provider = st.session_state.api_provider
 
 if api_provider == "Anthropic Claude 3":
-    model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
-    st.session_state.model_name = st.selectbox("Choose Claude Model", model_options)
     api_key = st.secrets["anthropic_api_key"]
     api_client = AnthropicClaude3API(api_key=api_key, model_name=st.session_state.model_name)
 elif api_provider == "OpenAI GPT-4o":
     api_key = st.secrets["openai_api_key"]
-    st.session_state.model_name = GPT4O_MODEL
     api_client = OpenAIGPT4oAPI(api_key=api_key, model_name=st.session_state.model_name)
-    st.session_state.top_p = st.sidebar.slider("Top P", min_value=0.0, max_value=1.0, step=0.1, key="top_p")
-    st.session_state.frequency_penalty = st.sidebar.slider("Frequency Penalty", min_value=0.0, max_value=2.0, step=0.1, key="frequency_penalty")
-    st.session_state.presence_penalty = st.sidebar.slider("Presence Penalty", min_value=0.0, max_value=2.0, step=0.1, key="presence_penalty")
 
 # Editable text area for the prompt
 prompt = st.text_area("Edit the prompt", value=st.session_state.prompt, height=300, key="prompt_text_area")
 
-def get_completion(messages, model_name, max_tokens, temperature, top_p, frequency_penalty, presence_penalty):
+def get_completion(messages, model_name, max_tokens, temperature, top_p=None, frequency_penalty=None, presence_penalty=None):
     if st.session_state.api_provider == "Anthropic Claude 3":
         response = api_client.generate_completion(
             prompt=messages,
@@ -99,9 +93,9 @@ if st.button("Generate Summary"):
         model_name=st.session_state.model_name,
         max_tokens=st.session_state.max_tokens,
         temperature=st.session_state.temperature,
-        top_p=st.session_state.top_p,
-        frequency_penalty=st.session_state.frequency_penalty,
-        presence_penalty=st.session_state.presence_penalty
+        top_p=st.session_state.top_p if "top_p" in st.session_state else None,
+        frequency_penalty=st.session_state.frequency_penalty if "frequency_penalty" in st.session_state else None,
+        presence_penalty=st.session_state.presence_penalty if "presence_penalty" in st.session_state else None
     )
     st.session_state.summary = completion
 
