@@ -30,6 +30,7 @@ def create_output_area(summary):
         
         # Display the summary using markdown
         st.code(f"""
+        import streamlit as st
         st.markdown('''{summary}''')
         """)
         
