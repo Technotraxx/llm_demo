@@ -63,6 +63,27 @@ elif api_choice == "Anthropic Claude 3":
 
 elif api_choice == "Google Gemini":
     if st.button("Get Google Gemini Response"):
-        model = genai.GenerativeModel(model_name)
-        response = model.generate_content(prompt, temperature=temperature)
+        generation_config = {
+            "temperature": temperature,
+            "top_p": 0.95,
+            "top_k": 64,
+            "max_output_tokens": 8192,
+            "response_mime_type": "text/plain",
+        }
+        safety_settings = [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+        ]
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            safety_settings=safety_settings,
+            generation_config=generation_config,
+        )
+        chat_session = model.start_chat(
+            history=[
+            ]
+        )
+        response = chat_session.send_message(prompt)
         st.write("Google Gemini Response: " + response.text)
