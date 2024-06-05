@@ -5,10 +5,6 @@ def create_sidebar():
     # Sidebar für Modell-Auswahl und Einstellungen
     st.sidebar.title("Settings")
 
-    # Reset-Button
-    if st.sidebar.button("Reset", key="sidebar_reset_button"):
-        reload_page()
-
 def create_main_area():
     st.title("PDF Text Summarizer with Multiple LLMs")
 
