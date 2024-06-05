@@ -21,28 +21,28 @@ MODELS = {
     "gemini-1.5-pro": {
         "description": "Audio, Bilder, Videos und Text",
         "max_output_tokens": 8096,
-        "default_temperature": 1,
+        "default_temperature": 1.0,
         "default_top_p": 0.95,
         "default_max_output_tokens": 2048
     },
     "gemini-1.5-flash": {
         "description": "Audio, Bilder, Videos und Text",
         "max_output_tokens": 8096,
-        "default_temperature": 1,
+        "default_temperature": 1.0,
         "default_top_p": 0.95,
         "default_max_output_tokens": 2048
     },
     "gemini-1.0-pro": {
         "description": "Text",
         "max_output_tokens": 8096,
-        "default_temperature": 1,
+        "default_temperature": 1.0,
         "default_top_p": 0.95,
         "default_max_output_tokens": 2048
     },
     "gemini-pro-vision": {
         "description": "Bilder, Videos und Text",
         "max_output_tokens": 8096,
-        "default_temperature": 1,
+        "default_temperature": 1.0,
         "default_top_p": 0.95,
         "default_max_output_tokens": 2048
     }
@@ -52,7 +52,7 @@ def get_model_settings(model_name):
     return MODELS.get(model_name, {
         "description": "Unknown model",
         "max_output_tokens": 8096,
-        "default_temperature": 1,
+        "default_temperature": 1.0,
         "default_top_p": 0.95,
         "default_max_output_tokens": 2048
     })
