@@ -30,8 +30,7 @@ def create_output_area(summary):
         st.write(summary)
 
 def create_right_sidebar(summary):
-    with st.sidebar:
-        st.header("Save and Send Options")
+    with st.expander("Save and Send Options", expanded=True):
         if summary:
             # Save options
             st.write("Save the summary:")
