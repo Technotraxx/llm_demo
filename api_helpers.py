@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from anthropic import Anthropic
 import google.generativeai as genai
+import streamlit as st
 
 # Set API keys
 openai_api_key = st.secrets["openai_api_key"]
