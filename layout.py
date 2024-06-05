@@ -5,12 +5,6 @@ def create_sidebar():
     # Sidebar für Modell-Auswahl und Einstellungen
     st.sidebar.title("Settings")
 
-    model_options = ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku", "GPT-4o", "GPT-3.5-turbo-16k", "Gemini 1.5 Pro", "Gemini 1.5 Flash", "Gemini 1.0 Pro", "Gemini Pro Vision"]
-    st.sidebar.selectbox("Choose a model", model_options, key="model_name")
-
-    st.sidebar.slider("Max Tokens", min_value=1, max_value=8192, step=1, key="max_tokens")
-    st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
-
     # Reset-Button
     if st.sidebar.button("Reset"):
         reload_page()
