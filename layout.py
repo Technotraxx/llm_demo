@@ -31,22 +31,6 @@ def create_output_area(summary):
         # Display the summary in a code block
         st.code(summary, language='text')
         
-        # Add JavaScript for copying text to clipboard
-        copy_js = f"""
-        <script>
-        function copyToClipboard(text) {{
-            navigator.clipboard.writeText(text).then(function() {{
-                alert('Text copied to clipboard');
-            }}).catch(function(error) {{
-                console.error('Error copying text: ', error);
-            }});
-        }}
-        </script>
-        <button onclick="copyToClipboard(`{summary}`)">Copy to Clipboard</button>
-        """
-        
-        st.markdown(copy_js, unsafe_allow_html=True)
-        
         with st.expander("Save and Send Options"):
             # Save options
             st.write("Save the summary:")
