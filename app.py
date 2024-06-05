@@ -19,7 +19,7 @@ claude_client = Anthropic(api_key=claude_api_key)
 genai.configure(api_key=google_api_key)
 
 # Initialize session state variables
-initialize_session_state(st)
+initialize_session_state()
 
 # Sidebar settings
 create_sidebar()
@@ -35,7 +35,7 @@ max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gem
 
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset"):
-    reset_session_state(st)
+    reset_session_state()
 
 # Create main area
 uploaded_file = create_main_area()
