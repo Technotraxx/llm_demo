@@ -105,7 +105,12 @@ if st.button("Generate Summary"):
         )
         response = model.generate_content(prompt_with_text)
         if response.candidates:
-            st.session_state.data["summary"] = response.candidates[0].text
+            candidate = response.candidates[0]
+            if hasattr(candidate, 'text'):
+                st.session_state.data["summary"] = candidate.text
+            else:
+                st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
+                st.write(response.prompt_feedback)
         else:
             st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
             st.write(response.prompt_feedback)
