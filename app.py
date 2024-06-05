@@ -17,6 +17,22 @@ openai_client = OpenAI(api_key=openai_api_key)
 claude_client = Anthropic(api_key=claude_api_key)
 genai.configure(api_key=google_api_key)
 
+# Initialize session state variables
+if "model_name" not in st.session_state:
+    st.session_state.model_name = "Claude 3 Opus"
+if "max_tokens" not in st.session_state:
+    st.session_state.max_tokens = 256
+if "temperature" not in st.session_state:
+    st.session_state.temperature = 0.7
+if "prompt" not in st.session_state:
+    st.session_state.prompt = prompt_templates["Default Template"]
+if "word_count" not in st.session_state:
+    st.session_state.word_count = 0
+if "summary" not in st.session_state:
+    st.session_state.summary = ""
+if "text" not in st.session_state:
+    st.session_state.text = ""
+
 # Sidebar settings
 create_sidebar()
 
@@ -26,8 +42,8 @@ model_name = st.sidebar.selectbox("Choose Model",
     ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307", "gpt-4o", "gpt-3.5-turbo-16k", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"])
 
 # Einstellungsoptionen
-temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.1, key="temperature")
-max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gemini" in model_name else 4096, value=2048, step=1, key="max_tokens")
+temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
+max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gemini" in model_name else 4096, value=st.session_state.max_tokens, step=1, key="max_tokens")
 
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset"):
@@ -87,7 +103,13 @@ if st.button("Generate Summary"):
     elif api_choice == "Google Gemini":
         model = genai.GenerativeModel(
             model_name=model_name,
-            generation_config={"temperature": temperature, "max_output_tokens": max_tokens}
+            generation_config={"temperature": temperature, "max_output_tokens": max_tokens},
+            safety_settings=[
+                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+            ]
         )
         response = model.generate_content(prompt_with_text)
         st.session_state.summary = response.text
