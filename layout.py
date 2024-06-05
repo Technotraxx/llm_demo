@@ -28,37 +28,36 @@ def create_output_area(summary):
         st.header("Output")
         st.write("Summary:")
         st.write(summary)
-        
-        # Save options
-        st.write("Save the summary:")
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
+
+def create_right_sidebar(summary):
+    with st.sidebar:
+        st.header("Save and Send Options")
+        if summary:
+            # Save options
+            st.write("Save the summary:")
             if st.button("Save as TXT"):
                 with open("summary.txt", "w") as file:
                     file.write(summary)
                 with open("summary.txt", "r") as file:
                     st.download_button(label="Download TXT", data=file, file_name="summary.txt", mime="text/plain")
-        with col2:
             if st.button("Save as CSV"):
                 with open("summary.csv", "w") as file:
                     file.write(summary)
                 with open("summary.csv", "r") as file:
                     st.download_button(label="Download CSV", data=file, file_name="summary.csv", mime="text/csv")
-        with col3:
             if st.button("Save as DOC"):
                 with open("summary.docx", "w") as file:
                     file.write(summary)
                 with open("summary.docx", "rb") as file:
                     st.download_button(label="Download DOC", data=file, file_name="summary.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-        with col4:
             if st.button("Save as XLS"):
                 with open("summary.xlsx", "w") as file:
                     file.write(summary)
                 with open("summary.xlsx", "rb") as file:
                     st.download_button(label="Download XLS", data=file, file_name="summary.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        
-        # Email option
-        st.write("Send the summary via email:")
-        email_address = st.text_input("Email address")
-        if st.button("Send Email"):
-            send_email("Summary from Claude 3 LLM", summary, email_address, st.secrets["email"], st.secrets["email_password"])
+
+            # Email option
+            st.write("Send the summary via email:")
+            email_address = st.text_input("Email address")
+            if st.button("Send Email"):
+                send_email("Summary from Claude 3 LLM", summary, email_address, st.secrets["email"], st.secrets["email_password"])
