@@ -23,7 +23,7 @@ if "api_provider" not in st.session_state:
 if "model_name" not in st.session_state:
     st.session_state.model_name = "claude-3-opus-20240229"
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 256
+    st.session_state.max_tokens = 512
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.7
 if "prompt" not in st.session_state:
@@ -58,8 +58,8 @@ elif api_choice == "Google Gemini":
 model_name = st.sidebar.selectbox("Choose Model", model_options, key="model_name")
 
 # Einstellungsoptionen
-temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
 max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gemini" in model_name else 4096, value=st.session_state.max_tokens, step=1, key="max_tokens")
+temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
 
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset"):
