@@ -29,16 +29,18 @@ def create_output_area(summary):
         st.write("Summary:")
         
         st.markdown(summary)
-    # New button to save summary as new input
-        if st.button("Save as new Input"):
-            st.session_state.text = summary
-            st.success("Summary saved as new input!")
         st.divider()
         
         # Display the summary using markdown
         with st.expander("Copy to Clipboard"):
             st.code(summary, language='markdown', line_numbers=True)
-     
+        
+        # New button to save summary as new input
+        if st.button("Save as new Input"):
+            st.session_state.text = summary
+            st.session_state.prompt = st.session_state.prompt.replace("{text}", summary)
+            st.success("Summary saved as new input!")
+
         with st.expander("Save and Send Options"):
             # Save options
             st.write("Save the summary:")
