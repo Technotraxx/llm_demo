@@ -22,15 +22,19 @@ api_choice = st.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Cl
 
 # Modell-Auswahl und Einstellungen
 model_name = ""
+max_tokens = 2048
 if api_choice == "OpenAI GPT-4o":
     model_options = ["gpt-4o", "gpt-3.5-turbo-16k"]
     model_name = st.selectbox("Choose Model", model_options)
+    max_tokens = st.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
 elif api_choice == "Anthropic Claude 3":
     model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
     model_name = st.selectbox("Choose Model", model_options)
+    max_tokens = st.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1)
 elif api_choice == "Google Gemini":
     model_options = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"]
     model_name = st.selectbox("Choose Model", model_options)
+    max_tokens = st.slider("Max Tokens", min_value=1, max_value=8192, value=2048, step=1)
 
 # Temperatur-Slider
 temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.1)
@@ -45,7 +49,8 @@ if api_choice == "OpenAI GPT-4o":
             messages=[
                 {"role": "user", "content": prompt}
             ],
-            temperature=temperature
+            temperature=temperature,
+            max_tokens=max_tokens
         )
         st.write("Assistant: " + completion.choices[0].message.content)
 
@@ -53,7 +58,7 @@ elif api_choice == "Anthropic Claude 3":
     if st.button("Get Claude 3 Response"):
         message = claude_client.messages.create(
             model=model_name,
-            max_tokens=2048,
+            max_tokens=max_tokens,
             temperature=temperature,
             messages=[
                 {"role": "user", "content": prompt}
@@ -67,7 +72,7 @@ elif api_choice == "Google Gemini":
             "temperature": temperature,
             "top_p": 0.95,
             "top_k": 64,
-            "max_output_tokens": 8192,
+            "max_output_tokens": max_tokens,
             "response_mime_type": "text/plain",
         }
         safety_settings = [
