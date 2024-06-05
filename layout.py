@@ -27,14 +27,16 @@ def create_output_area(summary):
     if summary:
         st.header("Output")
         st.write("Summary:")
-        st.write(summary)
+
+        # Display the summary in a code block
+        st.code(summary, language='text')
         
-        # JavaScript code to copy text to clipboard
+        # Add JavaScript for copying text to clipboard
         copy_js = f"""
         <script>
         function copyToClipboard(text) {{
             navigator.clipboard.writeText(text).then(function() {{
-                console.log('Text copied to clipboard');
+                alert('Text copied to clipboard');
             }}).catch(function(error) {{
                 console.error('Error copying text: ', error);
             }});
