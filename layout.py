@@ -7,8 +7,8 @@ def create_sidebar():
     model_options = ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"]
     model_name = st.sidebar.selectbox("Choose a model", model_options, key="model_name")
 
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, value=256, step=256, key="max_tokens")
-    temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.9, step=0.1, key="temperature")
+    max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, step=256, key="max_tokens")
+    temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
 
 def create_main_area():
     st.title("PDF Text Summarizer with Claude 3 LLM")
