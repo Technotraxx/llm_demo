@@ -85,8 +85,8 @@ if st.button("Generate Summary"):
     st.session_state.prompt = st.session_state.prompt_text_area
     prompt_with_text = st.session_state.prompt.replace("{text}", st.session_state.text)
     messages = [
-        {"role": "system", "content": [{"type": "text", "text": "You are a helpful assistant."}]},
-        {"role": "user", "content": [{"type": "text", "text": prompt_with_text}]}
+        {"role": "system", "content": "You are a helpful assistant. Help me with my task!"},
+        {"role": "user", "content": prompt_with_text}
     ]
     completion = get_completion(
         messages=prompt_with_text if st.session_state.api_provider == "Anthropic Claude 3" else messages,
