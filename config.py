@@ -1,7 +1,7 @@
-from templates import prompt_templates
 import streamlit as st
+from templates import prompt_templates
 
-def initialize_session_state(st):
+def initialize_session_state():
     if "settings" not in st.session_state:
         st.session_state.settings = {
             "api_provider": "Anthropic Claude 3",
@@ -17,7 +17,7 @@ def initialize_session_state(st):
             "text": ""
         }
 
-def reset_session_state(st):
+def reset_session_state():
     st.session_state.settings = {
         "api_provider": "Anthropic Claude 3",
         "model_name": "claude-3-opus-20240229",
@@ -30,8 +30,8 @@ def reset_session_state(st):
         "summary": "",
         "text": ""
     }
-    reload_page()
-
+    st.experimental_rerun()  # Reload the page to reset the states
+    
 MODEL_OPTIONS = {
     "OpenAI GPT-4o": ["gpt-4o", "gpt-3.5-turbo-16k"],
     "Anthropic Claude 3": ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"],
