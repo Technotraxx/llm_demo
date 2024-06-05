@@ -41,7 +41,7 @@ def create_output_area(summary):
                     st.success(f"Saved as {filename}")
                     with open(filename, "r") as file:
                         st.download_button(label="Download TXT", data=file, file_name=filename, mime="text/plain")
-            with col2
+            with col2:
                 if st.button("Save as CSV"):
                     filename = generate_unique_filename("summary", "csv")
                     with open(filename, "w") as file:
