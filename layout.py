@@ -28,11 +28,15 @@ def create_output_area(summary):
         st.header("Output")
         st.write("Summary:")
         
+        st.markdown(summary)
+
+        st.divider()
+        
         # Display the summary using markdown
         with st.expander("Code to Copy"):
             st.code(summary, language='text')
-        st.markdown(summary)
-                
+        
+        st.divider()                
         with st.expander("Save and Send Options"):
             # Save options
             st.write("Save the summary:")
