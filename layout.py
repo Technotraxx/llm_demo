@@ -1,19 +1,31 @@
 import streamlit as st
 from utils import reload_page, generate_unique_filename
 
+from config_anthropic_claude3 import DEFAULT_MODEL_NAME as CLAUDE_MODEL
+from config_openai_gpt4o import DEFAULT_MODEL_NAME as GPT4O_MODEL
+
 def create_sidebar():
-    # Sidebar for model selection und settings
     st.sidebar.title("Settings")
     
-    model_options = ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"]
-    model_name = st.sidebar.selectbox("Choose a model", model_options, key="model_name")
-
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, step=256, key="max_tokens")
-    temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
-
+    api_provider = st.sidebar.selectbox("Choose API Provider", ["Anthropic Claude 3", "OpenAI GPT-4o"], key="api_provider")
+    
+    if api_provider == "Anthropic Claude 3":
+        model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+        model_name = st.sidebar.selectbox("Choose Claude Model", model_options, key="model_name")
+        max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, step=256, key="max_tokens")
+        temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
+    elif api_provider == "OpenAI GPT-4o":
+        model_name = GPT4O_MODEL
+        max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, step=256, key="max_tokens")
+        temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
+        top_p = st.sidebar.slider("Top P", min_value=0.0, max_value=1.0, step=0.1, key="top_p")
+        frequency_penalty = st.sidebar.slider("Frequency Penalty", min_value=0.0, max_value=2.0, step=0.1, key="frequency_penalty")
+        presence_penalty = st.sidebar.slider("Presence Penalty", min_value=0.0, max_value=2.0, step=0.1, key="presence_penalty")
+    
     # Reset button
     if st.sidebar.button("Reset"):
         reload_page()  # Reload the page
+
 
 def create_main_area():
     st.title("PDF Text Summarizer with Claude 3 LLM")
