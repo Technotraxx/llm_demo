@@ -1,4 +1,5 @@
 import streamlit as st
+from utils import reload_page
 
 def create_sidebar():
     # Sidebar for model selection and settings
@@ -10,17 +11,15 @@ def create_sidebar():
     max_tokens = st.sidebar.slider("Max Tokens", min_value=0, max_value=4096, step=256, key="max_tokens")
     temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
 
+    # Reset button
+    if st.sidebar.button("Reset"):
+        reload_page()  # Reload the page
+
 def create_main_area():
     st.title("PDF Text Summarizer with Claude 3 LLM")
     
     # PDF Upload
     uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
-    
-    # Reset button
-    if st.button("Reset"):
-        for key in st.session_state.keys():
-            del st.session_state[key]
-        st.experimental_rerun()
     
     return uploaded_file
 
