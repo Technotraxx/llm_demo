@@ -3,7 +3,7 @@ from pypdf import PdfReader
 from anthropic import Anthropic
 from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
-from layout import create_sidebar, create_main_area, create_output_area, copy_to_clipboard
+from layout import create_sidebar, create_main_area, create_output_area
 
 # Initialize session state variables
 if "model_name" not in st.session_state:
