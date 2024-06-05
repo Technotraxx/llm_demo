@@ -18,8 +18,10 @@ claude_client = Anthropic(api_key=claude_api_key)
 genai.configure(api_key=google_api_key)
 
 # Initialize session state variables
+if "api_provider" not in st.session_state:
+    st.session_state.api_provider = "Anthropic Claude 3"
 if "model_name" not in st.session_state:
-    st.session_state.model_name = "Claude 3 Opus"
+    st.session_state.model_name = "claude-3-opus-20240229"
 if "max_tokens" not in st.session_state:
     st.session_state.max_tokens = 256
 if "temperature" not in st.session_state:
@@ -38,8 +40,17 @@ create_sidebar()
 
 # Model and API selection
 api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"])
-model_name = st.sidebar.selectbox("Choose Model", 
-    ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307", "gpt-4o", "gpt-3.5-turbo-16k", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"])
+st.session_state.api_provider = api_choice
+
+# Filter models based on API provider
+if api_choice == "OpenAI GPT-4o":
+    model_options = ["gpt-4o", "gpt-3.5-turbo-16k"]
+elif api_choice == "Anthropic Claude 3":
+    model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+elif api_choice == "Google Gemini":
+    model_options = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"]
+
+model_name = st.sidebar.selectbox("Choose Model", model_options, key="model_name")
 
 # Einstellungsoptionen
 temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=st.session_state.temperature, step=0.1, key="temperature")
