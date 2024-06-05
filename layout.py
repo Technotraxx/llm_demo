@@ -31,8 +31,8 @@ def create_output_area(summary):
         st.markdown(summary)
         st.divider()      
         # Display the summary using markdown
-        with st.expander("Code to Copy"):
-            st.code(summary, language='text')
+        with st.expander("Copy to Clipboard"):
+            st.code(summary, language='markdown', line_numbers=True)
                  
         with st.expander("Save and Send Options"):
             # Save options
