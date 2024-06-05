@@ -27,9 +27,9 @@ def create_output_area(summary):
     if summary:
         st.header("Output")
         st.write("Summary:")
-
-        # Display the summary in a code block
-        st.code(summary, language='text')
+        
+        # Display the summary using markdown
+        st.markdown(summary)
         
         with st.expander("Save and Send Options"):
             # Save options
