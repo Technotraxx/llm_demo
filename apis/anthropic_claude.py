@@ -19,20 +19,20 @@ class AnthropicClaudeAPI:
 MODELS = {
     "claude-3-opus-20240229": {
         "description": "Text und Bilder",
-        "max_tokens": 4096,
-        "default_temperature": 1,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
         "default_max_tokens": 2048
     },
     "claude-3-sonnet-20240229": {
         "description": "Text und Bilder",
-        "max_tokens": 4096,
-        "default_temperature": 1,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
         "default_max_tokens": 2048
     },
     "claude-3-haiku-20240307": {
         "description": "Text und Bilder",
-        "max_tokens": 4096,
-        "default_temperature": 1,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
         "default_max_tokens": 2048
     }
 }
@@ -40,7 +40,7 @@ MODELS = {
 def get_model_settings(model_name):
     return MODELS.get(model_name, {
         "description": "Unknown model",
-        "max_tokens": 4096,
-        "default_temperature": 1,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
         "default_max_tokens": 2048
     })
