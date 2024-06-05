@@ -4,7 +4,6 @@ from anthropic import Anthropic
 from templates import prompt_templates  # Importing the templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email  # Importing the utils functions
 
-
 # Function to reset session state
 def reset_session_state():
     for key in st.session_state.keys():
@@ -77,7 +76,7 @@ if uploaded_file is not None:
         st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
 
     # Editable text area for the prompt
-    prompt = st.text_area("Edit the prompt", st.session_state.prompt, height=300, key="prompt")
+    prompt = st.text_area("Edit the prompt", key="prompt", value=st.session_state.prompt, height=300)
 
     def get_completion(client, prompt, model_name, max_tokens, temperature):
         try:
@@ -93,7 +92,6 @@ if uploaded_file is not None:
         except Exception as e:
             st.error(f"An error occurred: {e}")
             return ""
-
 
 if st.button("Generate Summary"):
     # Replacing {text} in the user-edited prompt
@@ -126,3 +124,5 @@ if st.button("Generate Summary"):
         email_address = st.text_input("Email address")
         if st.button("Send Email"):
             send_email("Summary from Claude 3 LLM", completion, email_address, st.secrets["email"], st.secrets["email_password"])
+else:
+    st.write("Word count: 0")
