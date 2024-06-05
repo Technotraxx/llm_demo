@@ -22,20 +22,20 @@ class OpenAIGPT4oAPI:
 MODELS = {
     "gpt-4o": {
         "description": "Text und Bilder",
-        "max_tokens": 4096,
-        "default_temperature": 1,
-        "default_top_p": 1,
-        "default_frequency_penalty": 0,
-        "default_presence_penalty": 0,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
+        "default_top_p": 1.0,
+        "default_frequency_penalty": 0.0,
+        "default_presence_penalty": 0.0,
         "default_max_tokens": 2048
     },
     "gpt-3.5-turbo-16k": {
         "description": "Text",
-        "max_tokens": 4096,
-        "default_temperature": 1,
-        "default_top_p": 1,
-        "default_frequency_penalty": 0,
-        "default_presence_penalty": 0,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
+        "default_top_p": 1.0,
+        "default_frequency_penalty": 0.0,
+        "default_presence_penalty": 0.0,
         "default_max_tokens": 2048
     }
 }
@@ -43,10 +43,10 @@ MODELS = {
 def get_model_settings(model_name):
     return MODELS.get(model_name, {
         "description": "Unknown model",
-        "max_tokens": 4096,
-        "default_temperature": 1,
-        "default_top_p": 1,
-        "default_frequency_penalty": 0,
-        "default_presence_penalty": 0,
+        "max_output_tokens": 4096,
+        "default_temperature": 1.0,
+        "default_top_p": 1.0,
+        "default_frequency_penalty": 0.0,
+        "default_presence_penalty": 0.0,
         "default_max_tokens": 2048
     })
