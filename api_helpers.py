@@ -4,9 +4,9 @@ from anthropic import Anthropic
 import google.generativeai as genai
 
 # Set API keys
-openai_api_key = os.getenv("OPENAI_API_KEY")
-claude_api_key = os.getenv("ANTHROPIC_API_KEY")
-google_api_key = os.getenv("GOOGLE_API_KEY")
+openai_api_key = st.secrets["openai_api_key"]
+claude_api_key = st.secrets["anthropic_api_key"]
+google_api_key = st.secrets["google_api_key"]
 
 # Initialize clients
 openai_client = OpenAI(api_key=openai_api_key)
