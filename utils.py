@@ -7,6 +7,14 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+import time
+import uuid
+
+def generate_unique_filename(prefix, extension):
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    unique_id = uuid.uuid4().hex[:6]
+    return f"{prefix}_{timestamp}_{unique_id}.{extension}"
+
 def reload_page():
     st.experimental_rerun()
     
