@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename
+from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, send_email
 
 def create_sidebar():
     # Sidebar für Modell-Auswahl und Einstellungen
@@ -62,7 +62,3 @@ def create_output_area(summary):
             email_address = st.text_input("Email address", key="email_address")
             if st.button("Send Email", key="send_email_button"):
                 send_email("Summary from Multiple LLMs", summary, email_address, st.secrets["email"], st.secrets["email_password"])
-            save_xls(filename, summary)
-            st.success(f"Saved as {filename}")
-            with open(filename, "r") as file:
-                st.download_button(label="Download XLSX", data=file, file_name=filename)
