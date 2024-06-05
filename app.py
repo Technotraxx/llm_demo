@@ -93,30 +93,28 @@ if st.button("Generate Summary"):
         st.session_state.data["summary"] = message.content[0].text
 
     elif api_choice == "Google Gemini":
-        model = genai.GenerativeModel(
-            model_name=model_name,
-            generation_config={"temperature": temperature, "max_output_tokens": max_tokens},
-            safety_settings=[
-                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-            ]
-        )
-        response = model.generate_content(prompt_with_text)
-        if response.candidates:
-            candidate = response.candidates[0]
-            if hasattr(candidate, 'text'):
-                st.session_state.data["summary"] = candidate.text
-            else:
-                st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
-                st.write(response.prompt_feedback)
+    model = genai.GenerativeModel(
+        model_name=model_name,
+        generation_config={"temperature": temperature, "max_output_tokens": max_tokens},
+        safety_settings=[
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_HIGH"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_HIGH"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_HIGH"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_HIGH"},
+        ]
+    )
+    response = model.generate_content(prompt_with_text)
+    print(response)  # Log the entire response to the console for debugging
+    if response.candidates:
+        candidate = response.candidates[0]
+        st.session_state.data["summary"] = candidate.text if hasattr(candidate, 'text') else "Antwort ohne Textinhalt."
+    else:
+        st.session_state.data["summary"] = "Keine Antwort erhalten."
+        if hasattr(response, 'prompt_feedback'):
+            st.write("**Prompt Feedback:**", response.prompt_feedback)
         else:
-            st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
-            if hasattr(response, 'prompt_feedback'):
-                st.write(response.prompt_feedback)
-            else:
-                st.write("No prompt feedback available.")
+            st.write("Kein Prompt Feedback verfügbar.")
+
 
 # Create the output area
 create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
