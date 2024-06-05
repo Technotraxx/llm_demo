@@ -3,7 +3,7 @@ from pypdf import PdfReader
 from anthropic import Anthropic
 from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page
-from layout import create_sidebar, create_main_area, create_output_area
+from layout import create_sidebar, create_main_area, create_output_area, create_right_sidebar
 
 # Initialize session state variables
 if "model_name" not in st.session_state:
@@ -84,3 +84,6 @@ if uploaded_file is not None:
 
 # Create output area
 create_output_area(st.session_state.summary)
+
+# Create right sidebar
+create_right_sidebar(st.session_state.summary)
