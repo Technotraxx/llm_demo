@@ -27,6 +27,8 @@ if "prompt" not in st.session_state:
     """
 if "word_count" not in st.session_state:
     st.session_state.word_count = 0
+if "summary" not in st.session_state:
+    st.session_state.summary = ""
 
 # Title
 st.title("PDF Text Summarizer with Claude 3 LLM")
@@ -100,27 +102,33 @@ if uploaded_file is not None:
             prompt_with_text, model_options[model_name], max_tokens, temperature
         )
         if completion:
+            st.session_state.summary = completion
             st.write("Summary:")
             st.write(completion)
 
-            # Save options
-            st.write("Save the summary:")
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                if st.button("Save as TXT"):
-                    save_text(completion, "summary.txt")
-            with col2:
-                if st.button("Save as CSV"):
-                    save_csv(completion, "summary.csv")
-            with col3:
-                if st.button("Save as DOC"):
-                    save_doc(completion, "summary.docx")
-            with col4:
-                if st.button("Save as XLS"):
-                    save_xls(completion, "summary.xlsx")
+# Display the summary if it exists
+if st.session_state.summary:
+    st.write("Summary:")
+    st.write(st.session_state.summary)
 
-            # Email option
-            st.write("Send the summary via email:")
-            email_address = st.text_input("Email address")
-            if st.button("Send Email"):
-                send_email("Summary from Claude 3 LLM", completion, email_address, st.secrets["email"], st.secrets["email_password"])
+    # Save options
+    st.write("Save the summary:")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        if st.button("Save as TXT"):
+            save_text(st.session_state.summary, "summary.txt")
+    with col2:
+        if st.button("Save as CSV"):
+            save_csv(st.session_state.summary, "summary.csv")
+    with col3:
+        if st.button("Save as DOC"):
+            save_doc(st.session_state.summary, "summary.docx")
+    with col4:
+        if st.button("Save as XLS"):
+            save_xls(st.session_state.summary, "summary.xlsx")
+
+    # Email option
+    st.write("Send the summary via email:")
+    email_address = st.text_input("Email address")
+    if st.button("Send Email"):
+        send_email("Summary from Claude 3 LLM", st.session_state.summary, email_address, st.secrets["email"], st.secrets["email_password"])
