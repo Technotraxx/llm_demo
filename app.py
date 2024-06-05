@@ -1,53 +1,96 @@
 import streamlit as st
-from api_helpers import (
-    openai_models, claude_models, gemini_models,
-    get_openai_response, get_claude_response, get_gemini_response
-)
+from pypdf import PdfReader
+from openai import OpenAI
+from anthropic import Anthropic
+import google.generativeai as genai
 from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
 from layout import create_sidebar, create_main_area, create_output_area
 
-# Create the sidebar
+# Set API keys
+openai_api_key = st.secrets.get("openai_api_key")
+claude_api_key = st.secrets.get("anthropic_api_key")
+google_api_key = st.secrets.get("google_api_key")
+
+# Initialize the clients
+openai_client = OpenAI(api_key=openai_api_key)
+claude_client = Anthropic(api_key=claude_api_key)
+genai.configure(api_key=google_api_key)
+
+# Sidebar settings
 create_sidebar()
 
-# API-Auswahl und Modell-Auswahl in der Sidebar
-api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"], key="api_choice")
-model_name = ""
-if api_choice == "OpenAI GPT-4o":
-    model_name = st.sidebar.selectbox("Choose Model", openai_models, key="openai_model")
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1, key="openai_max_tokens")
-elif api_choice == "Anthropic Claude 3":
-    model_name = st.sidebar.selectbox("Choose Model", claude_models, key="claude_model")
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=4096, value=2048, step=1, key="claude_max_tokens")
-elif api_choice == "Google Gemini":
-    model_name = st.sidebar.selectbox("Choose Model", gemini_models, key="gemini_model")
-    max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192, value=2048, step=1, key="gemini_max_tokens")
+# Model and API selection
+api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"])
+model_name = st.sidebar.selectbox("Choose Model", 
+    ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307", "gpt-4o", "gpt-3.5-turbo-16k", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"])
 
-# Temperatur-Slider in der Sidebar
+# Einstellungsoptionen
 temperature = st.sidebar.slider("Temperature", min_value=0.0, max_value=1.0, value=0.7, step=0.1, key="temperature")
+max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gemini" in model_name else 4096, value=2048, step=1, key="max_tokens")
 
 # Reset-Button in der Sidebar
-if st.sidebar.button("Reset", key="reset_button"):
+if st.sidebar.button("Reset"):
     reload_page()
 
-# Create the main area
+# Create main area
 uploaded_file = create_main_area()
 
-# Prompt-Eingabe
-prompt = st.text_area("Enter your prompt here", "", key="prompt_text_area")
+if uploaded_file is not None:
+    reader = PdfReader(uploaded_file)
+    number_of_pages = len(reader.pages)
+    text = ''.join(page.extract_text() for page in reader.pages)
+    word_count = len(text.split())
+    st.session_state.word_count = word_count
+    st.session_state.text = text
 
-# Prompt-Generierung und Ausgabe
-if api_choice == "OpenAI GPT-4o":
-    if st.button("Get GPT-4o Response", key="gpt4o_button"):
-        response = get_openai_response(model_name, prompt, temperature, max_tokens)
-        create_output_area(response)
+if "text" in st.session_state and st.session_state.text:
+    with st.expander(f"Extracted Text (Word count: {st.session_state.word_count}):"):
+        st.write(st.session_state.text[:2000])  # Display the first 2000 characters
 
-elif api_choice == "Anthropic Claude 3":
-    if st.button("Get Claude 3 Response", key="claude_button"):
-        response = get_claude_response(model_name, prompt, temperature, max_tokens)
-        create_output_area(response)
+# Dropdown menu for prompt templates
+template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
 
-elif api_choice == "Google Gemini":
-    if st.button("Get Google Gemini Response", key="gemini_button"):
-        response = get_gemini_response(model_name, prompt, temperature, max_tokens)
-        create_output_area(response)
+# Set the prompt based on the selected template
+if st.button("Use Template"):
+    st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
+
+# Editable text area for the prompt
+prompt = st.text_area("Edit the prompt", value=st.session_state.prompt, height=300, key="prompt_text_area")
+
+# API call and response handling
+if st.button("Generate Summary"):
+    prompt_with_text = st.session_state.prompt.replace("{text}", st.session_state.text)
+
+    if api_choice == "OpenAI GPT-4o":
+        completion = openai_client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "user", "content": prompt_with_text}
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
+        st.session_state.summary = completion.choices[0].message.content
+
+    elif api_choice == "Anthropic Claude 3":
+        message = claude_client.messages.create(
+            model=model_name,
+            max_tokens=max_tokens,
+            messages=[
+                {"role": "user", "content": prompt_with_text}
+            ],
+            temperature=temperature
+        )
+        st.session_state.summary = message.content[0].text
+
+    elif api_choice == "Google Gemini":
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config={"temperature": temperature, "max_output_tokens": max_tokens}
+        )
+        response = model.generate_content(prompt_with_text)
+        st.session_state.summary = response.text
+
+# Create the output area
+create_output_area(st.session_state.summary if "summary" in st.session_state else "")
