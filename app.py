@@ -19,71 +19,73 @@ if "word_count" not in st.session_state:
 if "summary" not in st.session_state:
     st.session_state.summary = ""
 
-# Create sidebar
-create_sidebar()
+# Create layout with three columns: left for sidebar, center for main area, right for output and save/send options
+col1, col2, col3 = st.columns([1, 2, 1])
 
-# Create main area
-uploaded_file = create_main_area()
+with col1:
+    create_sidebar()
 
-if uploaded_file is not None:
-    reader = PdfReader(uploaded_file)
-    number_of_pages = len(reader.pages)
-    text = ''.join(page.extract_text() for page in reader.pages)
-    word_count = len(text.split())
-    st.session_state.word_count = word_count
+with col2:
+    uploaded_file = create_main_area()
 
-    st.write("Extracted Text:")
-    st.write(text[:2000])  # Display the first 2000 characters
-    st.write(f"Word count: {word_count}")
+    if uploaded_file is not None:
+        reader = PdfReader(uploaded_file)
+        number_of_pages = len(reader.pages)
+        text = ''.join(page.extract_text() for page in reader.pages)
+        word_count = len(text.split())
+        st.session_state.word_count = word_count
 
-    api_key = st.secrets["anthropic_api_key"]
-    client = Anthropic(api_key=api_key)
+        st.write("Extracted Text:")
+        st.write(text[:2000])  # Display the first 2000 characters
+        st.write(f"Word count: {word_count}")
 
-    model_options = {
-        "Claude 3 Opus": "claude-3-opus-20240229",
-        "Claude 3 Sonnet": "claude-3-sonnet-20240229",
-        "Claude 3 Haiku": "claude-3-haiku-20240307"
-    }
-    model_name = st.session_state.model_name
-    max_tokens = st.session_state.max_tokens
-    temperature = st.session_state.temperature
+        api_key = st.secrets["anthropic_api_key"]
+        client = Anthropic(api_key=api_key)
 
-    # Dropdown menu for prompt templates
-    template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
+        model_options = {
+            "Claude 3 Opus": "claude-3-opus-20240229",
+            "Claude 3 Sonnet": "claude-3-sonnet-20240229",
+            "Claude 3 Haiku": "claude-3-haiku-20240307"
+        }
+        model_name = st.session_state.model_name
+        max_tokens = st.session_state.max_tokens
+        temperature = st.session_state.temperature
 
-    # Set the prompt based on the selected template
-    if st.button("Use Template"):
-        st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
+        # Dropdown menu for prompt templates
+        template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
 
-    # Editable text area for the prompt
-    prompt = st.text_area("Edit the prompt", key="prompt", value=st.session_state.prompt, height=300)
+        # Set the prompt based on the selected template
+        if st.button("Use Template"):
+            st.session_state.prompt = prompt_templates[template_name].replace("{text}", "{text}")
 
-    def get_completion(client, prompt, model_name, max_tokens, temperature):
-        try:
-            response = client.messages.create(
-                model=model_name,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                messages=[{
-                    "role": 'user', "content":  prompt
-                }]
+        # Editable text area for the prompt
+        prompt = st.text_area("Edit the prompt", key="prompt", value=st.session_state.prompt, height=300)
+
+        def get_completion(client, prompt, model_name, max_tokens, temperature):
+            try:
+                response = client.messages.create(
+                    model=model_name,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                    messages=[{
+                        "role": 'user', "content":  prompt
+                    }]
+                )
+                return response.content[0].text
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+                return ""
+
+        if st.button("Generate Summary"):
+            # Replacing {text} in the user-edited prompt
+            prompt_with_text = prompt.replace("{text}", text)
+            completion = get_completion(client,
+                prompt_with_text, model_options[model_name], max_tokens, temperature
             )
-            return response.content[0].text
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-            return ""
+            if completion:
+                st.session_state.summary = completion
 
-    if st.button("Generate Summary"):
-        # Replacing {text} in the user-edited prompt
-        prompt_with_text = prompt.replace("{text}", text)
-        completion = get_completion(client,
-            prompt_with_text, model_options[model_name], max_tokens, temperature
-        )
-        if completion:
-            st.session_state.summary = completion
+        create_output_area(st.session_state.summary)
 
-# Create output area
-create_output_area(st.session_state.summary)
-
-# Create right sidebar
-create_right_sidebar(st.session_state.summary)
+with col3:
+    create_right_sidebar(st.session_state.summary)
