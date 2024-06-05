@@ -23,7 +23,7 @@ if "api_provider" not in st.session_state:
 if "model_name" not in st.session_state:
     st.session_state.model_name = "claude-3-opus-20240229"
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 256
+    st.session_state.max_tokens = 512
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.7
 if "prompt" not in st.session_state:
