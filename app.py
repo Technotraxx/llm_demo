@@ -39,8 +39,7 @@ if "text" not in st.session_state:
 create_sidebar()
 
 # Model and API selection
-api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"])
-st.session_state.api_provider = api_choice
+api_choice = st.sidebar.selectbox("Choose API Provider", ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"], key="api_provider")
 
 # Filter models based on API provider
 if api_choice == "OpenAI GPT-4o":
@@ -64,6 +63,14 @@ max_tokens = st.sidebar.slider("Max Tokens", min_value=1, max_value=8192 if "gem
 
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset"):
+    st.session_state.api_provider = "Anthropic Claude 3"
+    st.session_state.model_name = "claude-3-opus-20240229"
+    st.session_state.max_tokens = 256
+    st.session_state.temperature = 0.7
+    st.session_state.prompt = prompt_templates["Default Template"]
+    st.session_state.word_count = 0
+    st.session_state.summary = ""
+    st.session_state.text = ""
     reload_page()
 
 # Create main area
@@ -82,7 +89,7 @@ if "text" in st.session_state and st.session_state.text:
         st.write(st.session_state.text[:2000])  # Display the first 2000 characters
 
 # Dropdown menu for prompt templates
-template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()))
+template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()), key="template_name")
 
 # Set the prompt based on the selected template
 if st.button("Use Template"):
