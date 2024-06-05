@@ -47,7 +47,52 @@ MODEL_OPTIONS = {
 
 def filter_models(api_choice):
     model_options = MODEL_OPTIONS.get(api_choice, [])
-    # Den aktuellen model_name im Sitzungsstatus aktualisieren
     if st.session_state.settings["model_name"] not in model_options:
         st.session_state.settings["model_name"] = model_options[0] if model_options else None
     return model_options
+
+def create_sidebar():
+    # Model and API selection
+    api_choice_index = st.session_state.settings.get("api_provider_index", 1)
+    api_providers = ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"]
+    api_choice = st.sidebar.selectbox(
+        "Choose API Provider",
+        api_providers,
+        index=api_choice_index,
+        key="api_provider"
+    )
+    st.session_state.settings["api_provider_index"] = api_providers.index(api_choice)
+
+    model_options = filter_models(api_choice)
+    model_name_index = st.session_state.settings.get("model_name_index", 0)
+    if model_name_index >= len(model_options):
+        model_name_index = 0
+    model_name = st.sidebar.selectbox(
+        "Choose Model",
+        model_options,
+        index=model_name_index,
+        key="model_name"
+    )
+    st.session_state.settings["model_name_index"] = model_options.index(model_name)
+
+    # Einstellungsoptionen
+    temperature = st.sidebar.slider(
+        "Temperature", 
+        min_value=0.0, 
+        max_value=1.0, 
+        value=st.session_state.settings["temperature"], 
+        step=0.1, 
+        key="temperature"
+    )
+    max_tokens = st.sidebar.slider(
+        "Max Tokens", 
+        min_value=1, 
+        max_value=8192 if "gemini" in model_name else 4096, 
+        value=st.session_state.settings["max_tokens"], 
+        step=1, 
+        key="max_tokens"
+    )
+
+    # Reset-Button in der Sidebar
+    if st.sidebar.button("Reset", key="reset_button"):
+        reset_session_state()
