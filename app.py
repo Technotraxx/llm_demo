@@ -2,7 +2,7 @@ import streamlit as st
 from pypdf import PdfReader
 from anthropic import Anthropic
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page
 from layout import create_sidebar, create_main_area, create_output_area
 
 # Initialize session state variables
