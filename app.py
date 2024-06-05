@@ -26,16 +26,19 @@ create_sidebar()
 
 # Model and API selection
 api_choice_index = st.session_state.settings.get("api_provider_index", 1)
+api_providers = ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"]
 api_choice = st.sidebar.selectbox(
     "Choose API Provider",
-    ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"],
+    api_providers,
     index=api_choice_index,
     key="api_provider"
 )
-st.session_state.settings["api_provider_index"] = ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"].index(api_choice)
+st.session_state.settings["api_provider_index"] = api_providers.index(api_choice)
 
 model_options = filter_models(api_choice)
 model_name_index = st.session_state.settings.get("model_name_index", 0)
+if model_name_index >= len(model_options):
+    model_name_index = 0
 model_name = st.sidebar.selectbox(
     "Choose Model",
     model_options,
@@ -65,7 +68,6 @@ max_tokens = st.sidebar.slider(
 # Reset-Button in der Sidebar
 if st.sidebar.button("Reset", key="reset_button"):
     reset_session_state()
-    # UI wird automatisch aktualisiert, keine Notwendigkeit für st.experimental_rerun()
 
 # Create main area
 uploaded_file = create_main_area()
