@@ -30,9 +30,9 @@ elif api_choice == "Anthropic Claude 3":
     if st.button("Get Claude 3 Response"):
         message = claude_client.messages.create(
             model="claude-3-opus-20240229",
-            max_tokens=4096,
+            max_tokens=2048,
             messages=[
                 {"role": "user", "content": "Hello there!"}
             ]
         )
-        st.write("Claude 3 Response: " + message['completion'])
+        st.write("Claude 3 Response: " + message['content'][0]['text'])
