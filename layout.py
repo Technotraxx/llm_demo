@@ -28,6 +28,10 @@ def create_output_area(summary):
         st.header("Output")
         st.write("Summary:")
         st.write(summary)
+
+        st.markdown("---")
+        st.write("Copy Summary to Clipboard")
+        st.button("Copy to Clipboard", on_click=copy_to_clipboard, args=(summary,))
         
         with st.expander("Save and Send Options"):
             # Save options
@@ -71,3 +75,8 @@ def create_output_area(summary):
             email_address = st.text_input("Email address")
             if st.button("Send Email"):
                 send_email("Summary from Claude 3 LLM", summary, email_address, st.secrets["email"], st.secrets["email_password"])
+
+def copy_to_clipboard(text):
+    import pyperclip
+    pyperclip.copy(text)
+    st.success("Text copied to clipboard!")
