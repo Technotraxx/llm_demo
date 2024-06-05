@@ -39,7 +39,14 @@ def create_output_area(summary):
         if st.button("Save as new Input"):
             st.session_state.text = summary
             st.session_state.prompt = st.session_state.prompt.replace("{text}", summary)
+            st.session_state.saved_as_new_input = True
             st.success("Summary saved as new input!")
+
+        if st.session_state.get("saved_as_new_input", False):
+            if st.button("Regenerate"):
+                st.session_state.prompt = st.session_state.prompt_text_area
+                prompt_with_text = st.session_state.prompt.replace("{text}", st.session_state.text)
+                st.session_state.summary = generate_summary(prompt_with_text)
 
         with st.expander("Save and Send Options"):
             # Save options
