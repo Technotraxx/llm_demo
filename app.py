@@ -93,36 +93,34 @@ if uploaded_file is not None:
             st.error(f"An error occurred: {e}")
             return ""
 
-if st.button("Generate Summary"):
-    # Replacing {text} in the user-edited prompt
-    prompt_with_text = prompt.replace("{text}", text)
-    completion = get_completion(client,
-        prompt_with_text, model_options[model_name], max_tokens, temperature
-    )
-    if completion:
-        st.write("Summary:")
-        st.write(completion)
+    if st.button("Generate Summary"):
+        # Replacing {text} in the user-edited prompt
+        prompt_with_text = prompt.replace("{text}", text)
+        completion = get_completion(client,
+            prompt_with_text, model_options[model_name], max_tokens, temperature
+        )
+        if completion:
+            st.write("Summary:")
+            st.write(completion)
 
-        # Save options
-        st.write("Save the summary:")
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            if st.button("Save as TXT"):
-                save_text(completion, "summary.txt")
-        with col2:
-            if st.button("Save as CSV"):
-                save_csv(completion, "summary.csv")
-        with col3:
-            if st.button("Save as DOC"):
-                save_doc(completion, "summary.docx")
-        with col4:
-            if st.button("Save as XLS"):
-                save_xls(completion, "summary.xlsx")
+            # Save options
+            st.write("Save the summary:")
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                if st.button("Save as TXT"):
+                    save_text(completion, "summary.txt")
+            with col2:
+                if st.button("Save as CSV"):
+                    save_csv(completion, "summary.csv")
+            with col3:
+                if st.button("Save as DOC"):
+                    save_doc(completion, "summary.docx")
+            with col4:
+                if st.button("Save as XLS"):
+                    save_xls(completion, "summary.xlsx")
 
-        # Email option
-        st.write("Send the summary via email:")
-        email_address = st.text_input("Email address")
-        if st.button("Send Email"):
-            send_email("Summary from Claude 3 LLM", completion, email_address, st.secrets["email"], st.secrets["email_password"])
-else:
-    st.write("Word count: 0")
+            # Email option
+            st.write("Send the summary via email:")
+            email_address = st.text_input("Email address")
+            if st.button("Send Email"):
+                send_email("Summary from Claude 3 LLM", completion, email_address, st.secrets["email"], st.secrets["email_password"])
