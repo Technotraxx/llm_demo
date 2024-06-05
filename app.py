@@ -108,6 +108,7 @@ if st.button("Generate Summary"):
             st.session_state.data["summary"] = response.candidates[0].text
         else:
             st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
+            st.write(response.prompt_feedback)
 
 # Create the output area
 create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
