@@ -113,7 +113,10 @@ if st.button("Generate Summary"):
                 st.write(response.prompt_feedback)
         else:
             st.session_state.data["summary"] = "No response received. Please check the `response.prompt_feedback` for details."
-            st.write(response.prompt_feedback)
+            if hasattr(response, 'prompt_feedback'):
+                st.write(response.prompt_feedback)
+            else:
+                st.write("No prompt feedback available.")
 
 # Create the output area
 create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
