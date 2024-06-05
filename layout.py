@@ -29,10 +29,9 @@ def create_output_area(summary):
         st.write("Summary:")
         
         # Display the summary using markdown
-        st.code(f"""
-        import streamlit as st
-        st.markdown('''{summary}''')
-        """)
+        st.code(summary, language='text')
+        st.markdown(summary)
+        st.experimental_dialog(summary, *, width="small")
         
         with st.expander("Save and Send Options"):
             # Save options
