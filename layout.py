@@ -13,15 +13,15 @@ def create_sidebar():
 def create_main_area():
     st.title("PDF Text Summarizer with Claude 3 LLM")
     
+    # PDF Upload
+    uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
+    
     # Reset button
     if st.button("Reset"):
         for key in st.session_state.keys():
             del st.session_state[key]
-        st.session_state.uploaded_file = None  # Reset file uploader
         st.experimental_rerun()
     
-    # PDF Upload
-    uploaded_file = st.file_uploader("Upload a PDF file", type="pdf", key="uploaded_file")
     return uploaded_file
 
 def create_output_area(summary):
