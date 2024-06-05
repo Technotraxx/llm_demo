@@ -1,3 +1,7 @@
 streamlit
 pypdf
 anthropic
+python-docx
+pandas
+openpyxl
+smtplib
