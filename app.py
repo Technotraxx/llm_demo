@@ -17,6 +17,12 @@ if "max_tokens" not in st.session_state:
     st.session_state.max_tokens = 2048 if st.session_state.api_provider == "Anthropic Claude 3" else 1500
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.9 if st.session_state.api_provider == "Anthropic Claude 3" else 0.5
+if "top_p" not in st.session_state:
+    st.session_state.top_p = 1
+if "frequency_penalty" not in st.session_state:
+    st.session_state.frequency_penalty = 0
+if "presence_penalty" not in st.session_state:
+    st.session_state.presence_penalty = 0
 if "prompt" not in st.session_state:
     st.session_state.prompt = prompt_templates["Default Template"]
 if "word_count" not in st.session_state:
@@ -47,11 +53,17 @@ if "text" in st.session_state and st.session_state.text:
 api_provider = st.selectbox("Choose API Provider", ["Anthropic Claude 3", "OpenAI GPT-4o"], key="api_provider")
 
 if api_provider == "Anthropic Claude 3":
+    model_options = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+    st.session_state.model_name = st.selectbox("Choose Claude Model", model_options)
     api_key = st.secrets["anthropic_api_key"]
     api_client = AnthropicClaude3API(api_key=api_key, model_name=st.session_state.model_name)
 elif api_provider == "OpenAI GPT-4o":
     api_key = st.secrets["openai_api_key"]
+    st.session_state.model_name = GPT4O_MODEL
     api_client = OpenAIGPT4oAPI(api_key=api_key, model_name=st.session_state.model_name)
+    st.session_state.top_p = st.sidebar.slider("Top P", min_value=0.0, max_value=1.0, step=0.1, key="top_p")
+    st.session_state.frequency_penalty = st.sidebar.slider("Frequency Penalty", min_value=0.0, max_value=2.0, step=0.1, key="frequency_penalty")
+    st.session_state.presence_penalty = st.sidebar.slider("Presence Penalty", min_value=0.0, max_value=2.0, step=0.1, key="presence_penalty")
 
 # Editable text area for the prompt
 prompt = st.text_area("Edit the prompt", value=st.session_state.prompt, height=300, key="prompt_text_area")
@@ -60,7 +72,8 @@ def get_completion(messages, model_name, max_tokens, temperature, top_p, frequen
     if st.session_state.api_provider == "Anthropic Claude 3":
         response = api_client.generate_completion(
             prompt=messages,
-            max_tokens=max_tokens
+            max_tokens=max_tokens,
+            temperature=temperature
         )
         return response.messages[0].text
     elif st.session_state.api_provider == "OpenAI GPT-4o":
@@ -86,9 +99,9 @@ if st.button("Generate Summary"):
         model_name=st.session_state.model_name,
         max_tokens=st.session_state.max_tokens,
         temperature=st.session_state.temperature,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
+        top_p=st.session_state.top_p,
+        frequency_penalty=st.session_state.frequency_penalty,
+        presence_penalty=st.session_state.presence_penalty
     )
     st.session_state.summary = completion
 
