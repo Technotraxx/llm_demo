@@ -117,15 +117,43 @@ if st.session_state.summary:
     with col1:
         if st.button("Save as TXT"):
             save_text(st.session_state.summary, "summary.txt")
+            with open("summary.txt", "r") as file:
+                st.download_button(
+                    label="Download TXT",
+                    data=file,
+                    file_name="summary.txt",
+                    mime="text/plain"
+                )
     with col2:
         if st.button("Save as CSV"):
             save_csv(st.session_state.summary, "summary.csv")
+            with open("summary.csv", "r") as file:
+                st.download_button(
+                    label="Download CSV",
+                    data=file,
+                    file_name="summary.csv",
+                    mime="text/csv"
+                )
     with col3:
         if st.button("Save as DOC"):
             save_doc(st.session_state.summary, "summary.docx")
+            with open("summary.docx", "rb") as file:
+                st.download_button(
+                    label="Download DOC",
+                    data=file,
+                    file_name="summary.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
     with col4:
         if st.button("Save as XLS"):
             save_xls(st.session_state.summary, "summary.xlsx")
+            with open("summary.xlsx", "rb") as file:
+                st.download_button(
+                    label="Download XLS",
+                    data=file,
+                    file_name="summary.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
     # Email option
     st.write("Send the summary via email:")
