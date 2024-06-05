@@ -48,6 +48,7 @@ MODEL_OPTIONS = {
 
 def filter_models(api_choice):
     model_options = MODEL_OPTIONS.get(api_choice, [])
+    # Den aktuellen model_name im Sitzungsstatus aktualisieren
     if st.session_state.settings["model_name"] not in model_options:
-        st.session_state.settings["model_name"] = model_options[0] if model_options else None 
+        st.session_state.settings["model_name"] = model_options[0] if model_options else None
     return model_options
