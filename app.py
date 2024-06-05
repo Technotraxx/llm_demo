@@ -20,8 +20,6 @@ if "summary" not in st.session_state:
     st.session_state.summary = ""
 if "text" not in st.session_state:
     st.session_state.text = ""
-if "saved_as_new_input" not in st.session_state:
-    st.session_state.saved_as_new_input = False
 
 # Create sidebar
 create_sidebar()
@@ -78,16 +76,15 @@ def get_completion(client, prompt, model_name, max_tokens, temperature):
         st.error(f"An error occurred: {e}")
         return ""
 
-def generate_summary(prompt_with_text):
-    return get_completion(client, prompt_with_text, model_options[model_name], max_tokens, temperature)
-
 if st.button("Generate Summary"):
     # Update the session state with the edited prompt
     st.session_state.prompt = st.session_state.prompt_text_area
 
     # Replacing {text} in the user-edited prompt
     prompt_with_text = st.session_state.prompt.replace("{text}", st.session_state.text)
-    completion = generate_summary(prompt_with_text)
+    completion = get_completion(client,
+        prompt_with_text, model_options[model_name], max_tokens, temperature
+    )
     if completion:
         st.session_state.summary = completion
 
