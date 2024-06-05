@@ -18,8 +18,6 @@ if "word_count" not in st.session_state:
     st.session_state.word_count = 0
 if "summary" not in st.session_state:
     st.session_state.summary = ""
-if "uploaded_file" not in st.session_state:
-    st.session_state.uploaded_file = None
 
 # Create sidebar
 create_sidebar()
@@ -28,7 +26,6 @@ create_sidebar()
 uploaded_file = create_main_area()
 
 if uploaded_file is not None:
-    st.session_state.uploaded_file = uploaded_file
     reader = PdfReader(uploaded_file)
     number_of_pages = len(reader.pages)
     text = ''.join(page.extract_text() for page in reader.pages)
