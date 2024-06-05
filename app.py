@@ -35,4 +35,5 @@ elif api_choice == "Anthropic Claude 3":
                 {"role": "user", "content": "Hello there!"}
             ]
         )
+        # Der Zugriff auf die Antwort von Claude 3 sollte die richtige Struktur verwenden
         st.write("Claude 3 Response: " + message['content'][0]['text'])
