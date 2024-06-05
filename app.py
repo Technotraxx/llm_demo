@@ -1,7 +1,7 @@
 import streamlit as st
 from pypdf import PdfReader
 from anthropic import Anthropic
-from templates import prompt_templates  # Importing the templates
+from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email
 from layout import create_sidebar, create_main_area, create_output_area
 
@@ -18,6 +18,8 @@ if "word_count" not in st.session_state:
     st.session_state.word_count = 0
 if "summary" not in st.session_state:
     st.session_state.summary = ""
+if "uploaded_file" not in st.session_state:
+    st.session_state.uploaded_file = None
 
 # Create sidebar
 create_sidebar()
@@ -26,6 +28,7 @@ create_sidebar()
 uploaded_file = create_main_area()
 
 if uploaded_file is not None:
+    st.session_state.uploaded_file = uploaded_file
     reader = PdfReader(uploaded_file)
     number_of_pages = len(reader.pages)
     text = ''.join(page.extract_text() for page in reader.pages)
@@ -81,8 +84,6 @@ if uploaded_file is not None:
         )
         if completion:
             st.session_state.summary = completion
-            st.write("Summary:")
-            st.write(completion)
 
 # Create output area
 create_output_area(st.session_state.summary)
