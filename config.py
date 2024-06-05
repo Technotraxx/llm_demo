@@ -37,8 +37,7 @@ def reset_session_state():
         "text": ""
     }
     st.session_state.template_name = "Default Template"
-    st.experimental_rerun()  # Reload the page to reset the states
-
+    st.rerun()  # Replace st.experimental_rerun with st.rerun
 
 MODEL_OPTIONS = {
     "OpenAI GPT-4o": ["gpt-4o", "gpt-3.5-turbo-16k"],
