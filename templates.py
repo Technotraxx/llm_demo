@@ -1,5 +1,5 @@
 prompt_templates = {
-    "Default Template": """Here is an academic paper: <paper>{text}</paper>
+    "Default Template": """Here is an article: <paper>{text}</paper>
 
     Please do the following:
     1. Summarize the abstract at a kindergarten reading level. (In <kindergarten_abstract> tags.)
