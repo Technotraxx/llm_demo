@@ -2,8 +2,8 @@ import streamlit as st
 from pypdf import PdfReader
 from anthropic import Anthropic
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page
-from layout import create_sidebar, create_main_area, create_output_area
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
+from layout import create_sidebar, create_main_area, create_output_area, copy_to_clipboard
 
 # Initialize session state variables
 if "model_name" not in st.session_state:
@@ -18,6 +18,8 @@ if "word_count" not in st.session_state:
     st.session_state.word_count = 0
 if "summary" not in st.session_state:
     st.session_state.summary = ""
+if "text" not in st.session_state:
+    st.session_state.text = ""
 
 # Create sidebar
 create_sidebar()
@@ -31,10 +33,10 @@ if uploaded_file is not None:
     text = ''.join(page.extract_text() for page in reader.pages)
     word_count = len(text.split())
     st.session_state.word_count = word_count
+    st.session_state.text = text
 
-    st.write("Extracted Text:")
-    st.write(text[:2000])  # Display the first 2000 characters
-    st.write(f"Word count: {word_count}")
+    with st.expander(f"Extracted Text (Word count: {word_count}):"):
+        st.write(text[:2000])  # Display the first 2000 characters
 
     api_key = st.secrets["anthropic_api_key"]
     client = Anthropic(api_key=api_key)
