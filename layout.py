@@ -1,5 +1,6 @@
 import streamlit as st
 from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, send_email
+from datetime import datetime
 
 def create_sidebar():
     # Sidebar für Modell-Auswahl und Einstellungen
@@ -14,8 +15,11 @@ def create_main_area():
 
 def create_output_area(summary, model_name):
     if summary:
+        # Current date and time
+        now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
         st.header("Output:")
-        st.write(f"Created with {model_name}.")
+        st.write(f"Created with {model_name} on {now}.")
 
         st.markdown(summary)
         st.divider()
