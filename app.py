@@ -15,7 +15,7 @@ initialize_session_state()
 create_sidebar()
 
 # Create main area
-uploaded_file = create_main_area()
+uploaded_file, url_input = create_main_area()
 
 if uploaded_file:
     file_type = uploaded_file.name.split('.')[-1].lower()
@@ -30,6 +30,10 @@ if uploaded_file:
     
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
+
+# Logik für URL-Eingabe (wird später implementiert)
+if url_input:
+    st.write("URL input logic will be implemented here.")
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
