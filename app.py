@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+
 from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
