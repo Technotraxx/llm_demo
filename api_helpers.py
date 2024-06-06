@@ -38,6 +38,8 @@ def get_claude_response(model_name, prompt, temperature, max_tokens):
     )
     return message.content[0].text
 
+import google.generativeai as genai
+
 def get_gemini_response(model_name, prompt, temperature, max_tokens):
     generation_config = {
         "temperature": temperature,
@@ -52,11 +54,21 @@ def get_gemini_response(model_name, prompt, temperature, max_tokens):
         {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
     ]
-    model = genai.GenerativeModel(
-        model_name=model_name,
-        safety_settings=safety_settings,
-        generation_config=generation_config,
-    )
-    chat_session = model.start_chat(history=[])
-    response = chat_session.send_message(prompt)
-    return response.text
+
+    try:
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            safety_settings=safety_settings,
+            generation_config=generation_config,
+        )
+        chat_session = model.start_chat(history=[])
+        response = chat_session.send_message(prompt)
+        
+        if response.text:
+            return response.text
+        else:
+            return "No output from Gemini."
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return f"An error occurred: {str(e)}"
