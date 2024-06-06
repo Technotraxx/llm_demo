@@ -1,23 +1,12 @@
 import streamlit as st
-from pypdf import PdfReader
-from openai import OpenAI
-from anthropic import Anthropic
-import google.generativeai as genai
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
-from api_helpers import get_gemini_response 
-
-# Set API keys
-openai_api_key = st.secrets.get("openai_api_key")
-claude_api_key = st.secrets.get("anthropic_api_key")
-google_api_key = st.secrets.get("google_api_key")
+from api_helpers import get_gemini_response, initialize_clients
 
 # Initialize the clients
-openai_client = OpenAI(api_key=openai_api_key)
-claude_client = Anthropic(api_key=claude_api_key)
-genai.configure(api_key=google_api_key)
+openai_client, claude_client, genai = initialize_clients()
 
 # Initialize session state variables
 initialize_session_state()
@@ -27,13 +16,6 @@ create_sidebar()
 
 # Create main area
 uploaded_file = create_main_area()
-
-@st.cache_data
-def load_pdf(uploaded_file):
-    reader = PdfReader(uploaded_file)
-    text = ''.join(page.extract_text() for page in reader.pages)
-    word_count = len(text.split())
-    return text, word_count
 
 if uploaded_file:
     text, word_count = load_pdf(uploaded_file)
