@@ -15,13 +15,8 @@ def initialize_clients():
 
     return openai_client, claude_client, genai
 
-# Model options
-openai_models = ["gpt-4o", "gpt-3.5-turbo-16k"]
-claude_models = ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
-gemini_models = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro-vision"]
-
 # Function to generate response
-def get_openai_response(model_name, prompt, temperature, max_tokens):
+def get_openai_response(openai_client, model_name, prompt, temperature, max_tokens):
     completion = openai_client.chat.completions.create(
         model=model_name,
         messages=[{"role": "user", "content": prompt}],
@@ -30,7 +25,7 @@ def get_openai_response(model_name, prompt, temperature, max_tokens):
     )
     return completion.choices[0].message.content
 
-def get_claude_response(model_name, prompt, temperature, max_tokens):
+def get_claude_response(claude_client, model_name, prompt, temperature, max_tokens):
     message = claude_client.messages.create(
         model=model_name,
         max_tokens=max_tokens,
