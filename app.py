@@ -58,40 +58,41 @@ prompt = st.text_area("Edit the prompt", value=st.session_state.settings["prompt
 if st.button("Generate Summary"):
     prompt_with_text = st.session_state.settings["prompt"].replace("{text}", st.session_state.data["text"])
 
-    try:
-        if st.session_state.settings["api_provider_index"] == 0:  # OpenAI GPT-4o
-            completion = openai_client.chat.completions.create(
-                model=st.session_state.settings["model_name"],
-                messages=[
-                    {"role": "user", "content": prompt_with_text}
-                ],
-                temperature=st.session_state.settings["temperature"],
-                max_tokens=st.session_state.settings["max_tokens"]
-            )
-            st.session_state.data["summary"] = completion.choices[0].message.content
+    with st.spinner("Generating summary..."):
+        try:
+            if st.session_state.settings["api_provider_index"] == 0:  # OpenAI GPT-4o
+                completion = openai_client.chat.completions.create(
+                    model=st.session_state.settings["model_name"],
+                    messages=[
+                        {"role": "user", "content": prompt_with_text}
+                    ],
+                    temperature=st.session_state.settings["temperature"],
+                    max_tokens=st.session_state.settings["max_tokens"]
+                )
+                st.session_state.data["summary"] = completion.choices[0].message.content
 
-        elif st.session_state.settings["api_provider_index"] == 1:  # Anthropic Claude 3
-            message = claude_client.messages.create(
-                model=st.session_state.settings["model_name"],
-                max_tokens=st.session_state.settings["max_tokens"],
-                messages=[
-                    {"role": "user", "content": prompt_with_text}
-                ],
-                temperature=st.session_state.settings["temperature"]
-            )
-            st.session_state.data["summary"] = message.content[0].text
+            elif st.session_state.settings["api_provider_index"] == 1:  # Anthropic Claude 3
+                message = claude_client.messages.create(
+                    model=st.session_state.settings["model_name"],
+                    max_tokens=st.session_state.settings["max_tokens"],
+                    messages=[
+                        {"role": "user", "content": prompt_with_text}
+                    ],
+                    temperature=st.session_state.settings["temperature"]
+                )
+                st.session_state.data["summary"] = message.content[0].text
 
-        elif st.session_state.settings["api_provider_index"] == 2:  # Google Gemini
-            response = get_gemini_response(
-                st.session_state.settings["model_name"],
-                prompt_with_text,
-                st.session_state.settings["temperature"],
-                st.session_state.settings["max_tokens"]
-            )
-            st.session_state.data["summary"] = response
+            elif st.session_state.settings["api_provider_index"] == 2:  # Google Gemini
+                response = get_gemini_response(
+                    st.session_state.settings["model_name"],
+                    prompt_with_text,
+                    st.session_state.settings["temperature"],
+                    st.session_state.settings["max_tokens"]
+                )
+                st.session_state.data["summary"] = response
 
-    except Exception as e:
-        st.write(f"An error occurred during the API call: {str(e)}")
+        except Exception as e:
+            st.write(f"An error occurred during the API call: {str(e)}")
 
 # Create the output area
 create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
