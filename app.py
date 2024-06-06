@@ -7,6 +7,7 @@ from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
+from apihelpers import get_gemini_response 
 
 # Set API keys
 openai_api_key = st.secrets.get("openai_api_key")
@@ -57,46 +58,42 @@ prompt = st.text_area("Edit the prompt", value=st.session_state.settings["prompt
 if st.button("Generate Summary"):
     prompt_with_text = st.session_state.settings["prompt"].replace("{text}", st.session_state.data["text"])
 
-    if st.session_state.settings["api_provider_index"] == 0:  # OpenAI GPT-4o
-        completion = openai_client.chat.completions.create(
-            model=st.session_state.settings["model_name"],
-            messages=[
-                {"role": "user", "content": prompt_with_text}
-            ],
-            temperature=st.session_state.settings["temperature"],
-            max_tokens=st.session_state.settings["max_tokens"]
-        )
-        st.session_state.data["summary"] = completion.choices[0].message.content
+    try:
+        if st.session_state.settings["api_provider_index"] == 0:  # OpenAI GPT-4o
+            completion = openai_client.chat.completions.create(
+                model=st.session_state.settings["model_name"],
+                messages=[
+                    {"role": "user", "content": prompt_with_text}
+                ],
+                temperature=st.session_state.settings["temperature"],
+                max_tokens=st.session_state.settings["max_tokens"]
+            )
+            st.session_state.data["summary"] = completion.choices[0].message.content
 
-    elif st.session_state.settings["api_provider_index"] == 1:  # Anthropic Claude 3
-        message = claude_client.messages.create(
-            model=st.session_state.settings["model_name"],
-            max_tokens=st.session_state.settings["max_tokens"],
-            messages=[
-                {"role": "user", "content": prompt_with_text}
-            ],
-            temperature=st.session_state.settings["temperature"]
-        )
-        st.session_state.data["summary"] = message.content[0].text
+        elif st.session_state.settings["api_provider_index"] == 1:  # Anthropic Claude 3
+            message = claude_client.messages.create(
+                model=st.session_state.settings["model_name"],
+                max_tokens=st.session_state.settings["max_tokens"],
+                messages=[
+                    {"role": "user", "content": prompt_with_text}
+                ],
+                temperature=st.session_state.settings["temperature"]
+            )
+            st.session_state.data["summary"] = message.content[0].text
 
-    elif st.session_state.settings["api_provider_index"] == 2:  # Google Gemini
-        model = genai.GenerativeModel(
-            model_name=st.session_state.settings["model_name"],
-            generation_config={"temperature": st.session_state.settings["temperature"], "max_output_tokens": st.session_state.settings["max_tokens"]},
-            # safety_settings = Adjust safety settings
-            # See https://ai.google.dev/gemini-api/docs/safety-settings
-        )
-        response = model.generate_content(prompt_with_text)
-        print(response)  # Log the entire response to the console for debugging
-        if response.candidates:
-            candidate = response.candidates[0]
-            st.session_state.data["summary"] = candidate.text if hasattr(candidate, 'text') else "Antwort ohne Textinhalt."
-        else:
-            st.session_state.data["summary"] = "Keine Antwort erhalten."
-            if hasattr(response, 'prompt_feedback'):
-                st.write("**Prompt Feedback:**", response.prompt_feedback)
-            else:
-                st.write("Kein Prompt Feedback verfügbar.")
+        elif st.session_state.settings["api_provider_index"] == 2:  # Google Gemini
+            response = get_gemini_response(
+                st.session_state.settings["model_name"],
+                prompt_with_text,
+                st.session_state.settings["temperature"],
+                st.session_state.settings["max_tokens"]
+            )
+            st.session_state.data["summary"] = response
+            st.subheader("Gemini:")
+            st.write(response)
+
+    except Exception as e:
+        st.write(f"An error occurred during the API call: {str(e)}")
 
 # Create the output area
 create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
