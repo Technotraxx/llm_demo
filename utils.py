@@ -34,7 +34,12 @@ def load_txt(uploaded_file):
     return text, word_count
 
 def load_csv(uploaded_file):
-    df = pd.read_csv(uploaded_file)
+    # Bestimmen der Kodierung
+    rawdata = uploaded_file.read()
+    result = chardet.detect(rawdata)
+    charenc = result['encoding']
+    uploaded_file.seek(0)  # Setze den Dateizeiger zurück
+    df = pd.read_csv(uploaded_file, encoding=charenc)
     text = df.to_string()
     word_count = len(text.split())
     return text, word_count
