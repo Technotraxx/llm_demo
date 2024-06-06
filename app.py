@@ -38,7 +38,7 @@ if uploaded_file:
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
 
-if url_input:
+if url_input and submit_url:
     text, word_count = load_url(url_input)
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
