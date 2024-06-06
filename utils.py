@@ -1,14 +1,16 @@
 import streamlit as st
-import pandas as pd
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import os
 import time
 import base64
+import pandas as pd
+import smtplib
+import chardet
 
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from pypdf import PdfReader
 from docx import Document
+
 
 def load_pdf(uploaded_file):
     reader = PdfReader(uploaded_file)
