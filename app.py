@@ -89,8 +89,6 @@ if st.button("Generate Summary"):
                 st.session_state.settings["max_tokens"]
             )
             st.session_state.data["summary"] = response
-            st.subheader("Gemini:")
-            st.write(response)
 
     except Exception as e:
         st.write(f"An error occurred during the API call: {str(e)}")
