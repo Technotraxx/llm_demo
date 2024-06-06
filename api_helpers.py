@@ -5,9 +5,9 @@ import google.generativeai as genai
 import streamlit as st
 
 def initialize_clients():
-    openai_api_key = st.secrets.get("openai_api_key")
-    claude_api_key = st.secrets.get("anthropic_api_key")
-    google_api_key = st.secrets.get("google_api_key")
+    openai_api_key = st.secrets["openai"]["api_key"]
+    claude_api_key = st.secrets["anthropic"]["api_key"]
+    google_api_key = st.secrets["google"]["api_key"]
 
     openai_client = OpenAI(api_key=openai_api_key)
     claude_client = Anthropic(api_key=claude_api_key)
