@@ -5,7 +5,9 @@ import base64
 import pandas as pd
 import smtplib
 import chardet
+import requests
 
+from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from pypdf import PdfReader
@@ -45,6 +47,14 @@ def load_csv(uploaded_file):
     # Lesen der CSV-Datei mit Fehlerbehandlung für problematische Zeilen
     df = pd.read_csv(uploaded_file, encoding=charenc, on_bad_lines='skip')
     text = df.to_string()
+    word_count = len(text.split())
+    return text, word_count
+
+def load_url(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    paragraphs = soup.find_all('p')
+    text = ' '.join([para.get_text() for para in paragraphs])
     word_count = len(text.split())
     return text, word_count
 
