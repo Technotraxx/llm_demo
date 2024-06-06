@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -7,10 +8,34 @@ import time
 import base64
 
 from pypdf import PdfReader
+from docx import Document
 
 def load_pdf(uploaded_file):
     reader = PdfReader(uploaded_file)
     text = ''.join(page.extract_text() for page in reader.pages)
+    word_count = len(text.split())
+    return text, word_count
+
+def load_pdf(uploaded_file):
+    reader = PdfReader(uploaded_file)
+    text = ''.join(page.extract_text() for page in reader.pages)
+    word_count = len(text.split())
+    return text, word_count
+
+def load_docx(uploaded_file):
+    doc = Document(uploaded_file)
+    text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+    word_count = len(text.split())
+    return text, word_count
+
+def load_txt(uploaded_file):
+    text = uploaded_file.read().decode("utf-8")
+    word_count = len(text.split())
+    return text, word_count
+
+def load_csv(uploaded_file):
+    df = pd.read_csv(uploaded_file)
+    text = df.to_string()
     word_count = len(text.split())
     return text, word_count
 
