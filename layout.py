@@ -9,9 +9,16 @@ def create_sidebar():
 def create_main_area():
     st.title("Text Summarizer with Multiple LLMs")
 
-    # Dateiupload
-    uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
-    return uploaded_file
+    # Tabs für Upload und URL
+    tab1, tab2 = st.tabs(["Upload", "URL"])
+
+    with tab1:
+        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
+        return uploaded_file, None
+
+    with tab2:
+        url_input = st.text_input("Enter URL", key="url_input")
+        return None, url_input
 
 def create_output_area(summary, model_name):
     if summary:
