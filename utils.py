@@ -6,6 +6,14 @@ import os
 import time
 import base64
 
+from pypdf import PdfReader
+
+def load_pdf(uploaded_file):
+    reader = PdfReader(uploaded_file)
+    text = ''.join(page.extract_text() for page in reader.pages)
+    word_count = len(text.split())
+    return text, word_count
+
 def reload_page():
     st.experimental_rerun()
 
