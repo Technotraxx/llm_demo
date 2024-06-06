@@ -38,10 +38,16 @@ if uploaded_file:
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
 
-if url_input and (submit_url or st.session_state.get("url_input_changed", False)):
+# Update session state when URL input changes
+if url_input:
+    st.session_state.url_input_changed = True
+
+# Check for submit button or URL input change
+if (url_input and st.session_state.get("url_input_changed")) or submit_url:
     text, word_count = load_url(url_input)
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
+    st.session_state.url_input_changed = False
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
