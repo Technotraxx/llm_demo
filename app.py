@@ -1,6 +1,6 @@
 import streamlit as st
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
@@ -31,9 +31,10 @@ if uploaded_file:
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
 
-# Logik für URL-Eingabe (wird später implementiert)
 if url_input:
-    st.write("URL input logic will be implemented here.")
+    text, word_count = load_url(url_input)
+    st.session_state.data["text"] = text
+    st.session_state.data["word_count"] = word_count
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
