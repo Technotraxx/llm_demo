@@ -7,7 +7,7 @@ from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
-from apihelpers import get_gemini_response 
+from api_helpers import get_gemini_response 
 
 # Set API keys
 openai_api_key = st.secrets.get("openai_api_key")
