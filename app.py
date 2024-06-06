@@ -70,6 +70,7 @@ if st.button("Generate Summary"):
                     max_tokens=st.session_state.settings["max_tokens"]
                 )
                 st.session_state.data["summary"] = completion.choices[0].message.content
+                st.session_state.data["model_used"] = "GPT-4o"
 
             elif st.session_state.settings["api_provider_index"] == 1:  # Anthropic Claude 3
                 message = claude_client.messages.create(
@@ -81,6 +82,7 @@ if st.button("Generate Summary"):
                     temperature=st.session_state.settings["temperature"]
                 )
                 st.session_state.data["summary"] = message.content[0].text
+                st.session_state.data["model_used"] = st.session_state.settings["model_name"]
 
             elif st.session_state.settings["api_provider_index"] == 2:  # Google Gemini
                 response = get_gemini_response(
@@ -90,9 +92,14 @@ if st.button("Generate Summary"):
                     st.session_state.settings["max_tokens"]
                 )
                 st.session_state.data["summary"] = response
+                st.session_state.data["model_used"] = st.session_state.settings["model_name"]
 
         except Exception as e:
-            st.write(f"An error occurred during the API call: {str(e)}")
+            st.session_state.data["summary"] = f"An error occurred during the API call: {str(e)}"
+            st.session_state.data["model_used"] = ""
 
 # Create the output area
-create_output_area(st.session_state.data["summary"] if "summary" in st.session_state.data else "")
+create_output_area(
+    st.session_state.data["summary"] if "summary" in st.session_state.data else "",
+    st.session_state.data.get("model_used", "")
+)
