@@ -1,6 +1,6 @@
 import streamlit as st
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
@@ -18,7 +18,16 @@ create_sidebar()
 uploaded_file = create_main_area()
 
 if uploaded_file:
-    text, word_count = load_pdf(uploaded_file)
+    file_type = uploaded_file.name.split('.')[-1].lower()
+    if file_type == 'pdf':
+        text, word_count = load_pdf(uploaded_file)
+    elif file_type == 'docx':
+        text, word_count = load_docx(uploaded_file)
+    elif file_type == 'txt':
+        text, word_count = load_txt(uploaded_file)
+    elif file_type == 'csv':
+        text, word_count = load_csv(uploaded_file)
+    
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
 
