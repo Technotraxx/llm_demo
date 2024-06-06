@@ -4,15 +4,16 @@ from anthropic import Anthropic
 import google.generativeai as genai
 import streamlit as st
 
-# Set API keys
-openai_api_key = st.secrets["openai_api_key"]
-claude_api_key = st.secrets["anthropic_api_key"]
-google_api_key = st.secrets["google_api_key"]
+def initialize_clients():
+    openai_api_key = st.secrets.get("openai_api_key")
+    claude_api_key = st.secrets.get("anthropic_api_key")
+    google_api_key = st.secrets.get("google_api_key")
 
-# Initialize clients
-openai_client = OpenAI(api_key=openai_api_key)
-claude_client = Anthropic(api_key=claude_api_key)
-genai.configure(api_key=google_api_key)
+    openai_client = OpenAI(api_key=openai_api_key)
+    claude_client = Anthropic(api_key=claude_api_key)
+    genai.configure(api_key=google_api_key)
+
+    return openai_client, claude_client, genai
 
 # Model options
 openai_models = ["gpt-4o", "gpt-3.5-turbo-16k"]
@@ -37,8 +38,6 @@ def get_claude_response(model_name, prompt, temperature, max_tokens):
         messages=[{"role": "user", "content": prompt}]
     )
     return message.content[0].text
-
-import google.generativeai as genai
 
 def get_gemini_response(model_name, prompt, temperature, max_tokens):
     generation_config = {
