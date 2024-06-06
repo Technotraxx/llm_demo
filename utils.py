@@ -41,7 +41,9 @@ def load_csv(uploaded_file):
     result = chardet.detect(rawdata)
     charenc = result['encoding']
     uploaded_file.seek(0)  # Setze den Dateizeiger zurück
-    df = pd.read_csv(uploaded_file, encoding=charenc)
+
+    # Lesen der CSV-Datei mit Fehlerbehandlung für problematische Zeilen
+    df = pd.read_csv(uploaded_file, encoding=charenc, on_bad_lines='skip')
     text = df.to_string()
     word_count = len(text.split())
     return text, word_count
