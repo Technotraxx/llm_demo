@@ -7,19 +7,19 @@ def create_sidebar():
     st.sidebar.title("Settings")
 
 def create_main_area():
-    st.title("PDF Text Summarizer with Multiple LLMs")
+    st.title("Text Summarizer with Multiple LLMs")
 
-    # PDF-Upload
-    uploaded_file = st.file_uploader("Upload a PDF file", type="pdf", key="pdf_uploader")
+    # Dateiupload
+    uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
     return uploaded_file
 
 def create_output_area(summary, model_name):
     if summary:
-        # Current date and time
+        # Aktuelles Datum und Uhrzeit in deutscher Schreibweise
         now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
         st.header("Output:")
-        st.markdown(f"_Created with {model_name} on {now}._")
+        st.markdown(f"**Created with {model_name}** am _{now}_.")
 
         st.markdown(summary)
         st.divider()
