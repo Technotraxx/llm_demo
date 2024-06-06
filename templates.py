@@ -23,6 +23,6 @@ prompt_templates = {
         "- summary: Provide a concise 2-3 sentence summary of the key points of the article.\n"
         "- unusual_or_contradictory: Note anything unusual or contradictory stated in the article. If there is nothing unusual or contradictory, say 'Nichts Ungewöhnliches oder Widersprüchliches aufgefallen.'\n\n"
         "Important: Only extract information that is explicitly stated in the provided text. Do not make assumptions or add any information that is not directly mentioned.\n\n"
-        "Please provide your full result inside <result> tags."
+        "Please provide your full result as markdown text with headlines, subheadings, bulletpoints, text or lists."
     )
 }
