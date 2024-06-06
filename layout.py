@@ -15,7 +15,7 @@ def create_main_area():
 def create_output_area(summary):
     if summary:
         st.header("Output")
-        st.write("Summary:")
+        st.write(f"Created with {model_name}:")
 
         st.markdown(summary)
         st.divider()
