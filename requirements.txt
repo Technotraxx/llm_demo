@@ -1,10 +1,10 @@
 streamlit
-pypdf
-anthropic
-openai
-google.generativeai
-python-docx
 pandas
-openpyxl
-pyperclip
+pypdf
+openai
+anthropic
+google-generativeai
+python-docx
 chardet
+requests
+beautifulsoup4
