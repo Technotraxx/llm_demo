@@ -12,7 +12,7 @@ def create_main_area():
     uploaded_file = st.file_uploader("Upload a PDF file", type="pdf", key="pdf_uploader")
     return uploaded_file
 
-def create_output_area(summary):
+def create_output_area(summary, model_name):
     if summary:
         st.header("Output")
         st.write(f"Created with {model_name}:")
