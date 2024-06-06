@@ -5,6 +5,11 @@ from layout import create_sidebar as create_layout_sidebar, create_main_area, cr
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
 
+# Set environment variables
+os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
+os.environ["ANTHROPIC_API_KEY"] = st.secrets["anthropic_api_key"]
+os.environ["GOOGLE_API_KEY"] = st.secrets["google_api_key"]
+
 # Initialize the clients
 openai_client, claude_client, genai = initialize_clients()
 
