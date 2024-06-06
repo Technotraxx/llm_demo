@@ -2,8 +2,8 @@ streamlit
 pypdf
 anthropic
 openai
+google.generativeai
 python-docx
 pandas
 openpyxl
 pyperclip
-google.generativeai
