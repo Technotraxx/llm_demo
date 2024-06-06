@@ -20,8 +20,9 @@ def create_main_area():
 
     with tab2:
         url_input = st.text_input("Enter URL", key="url_input")
+        submit_url = st.button("Submit URL", key="submit_url")
 
-    return uploaded_file, url_input
+    return uploaded_file, url_input, submit_url
 
 def create_output_area(summary, model_name):
     if summary:
