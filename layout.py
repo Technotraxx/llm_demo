@@ -19,7 +19,7 @@ def create_output_area(summary, model_name):
         now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
         st.header("Output:")
-        st.write(f"Created with {model_name} on {now}.")
+        st.markdown(f"**Created with {model_name}** on _{now}_.")
 
         st.markdown(summary)
         st.divider()
