@@ -21,17 +21,21 @@ def create_main_area():
     selected_language = None
     submit_youtube = None
 
+    # Tab 1: File Upload
     with tab1:
         uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
 
+    # Tab 2: Website URL Eingabe
     with tab2:
         url_input = st.text_input("Enter URL", key="url_input")
         submit_url = st.button("Submit URL", key="submit_url")
 
+    # Tab 3: YouTube URL/ID-Eingabe
     with tab3:
         youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
         submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
+        # Überprüfen der YouTube-URL/ID-Eingabe
         if youtube_input:
             video_id = extract_video_id(youtube_input)
             if video_id:
