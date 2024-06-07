@@ -58,8 +58,11 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
     video_id = extract_video_id(youtube_input)
     if video_id:
         text, word_count = load_youtube_transcript(video_id)  # Pass the video_id directly
-        st.session_state.data["text"] = text
-        st.session_state.data["word_count"] = word_count
+        if word_count == 0:
+            st.error(text)
+        else:
+            st.session_state.data["text"] = text
+            st.session_state.data["word_count"] = word_count
     else:
         st.error("Please enter a valid YouTube URL or ID.")
     st.session_state.youtube_input_changed = False
