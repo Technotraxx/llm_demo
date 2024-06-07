@@ -8,7 +8,7 @@ import chardet
 import requests
 import re
 
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi, VideoUnavailable, TranscriptsDisabled, NoTranscriptFound
 from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -64,10 +64,13 @@ def load_youtube_transcript(youtube_input):
     video_id = extract_video_id(youtube_input)
     if not video_id:
         return None, 0
-    transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-    transcript = ' '.join([t['text'] for t in transcript_list])
-    word_count = len(transcript.split())
-    return transcript, word_count
+    try:
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = ' '.join([t['text'] for t in transcript_list])
+        word_count = len(transcript.split())
+        return transcript, word_count
+    except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
+        return f"Error: {str(e)}", 0
 
 def extract_video_id(url):
     # Match different YouTube URL formats and extract the video ID
