@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import uuid
 
 from templates import prompt_templates
 from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url, load_youtube_transcript, extract_video_id, list_available_transcripts
