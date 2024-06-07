@@ -23,7 +23,7 @@ initialize_session_state()
 create_sidebar()
 
 # Create main area
-uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language = create_main_area()
+uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
 
 if uploaded_file:
     file_type = uploaded_file.name.split('.')[-1].lower()
@@ -59,19 +59,30 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
     video_id = extract_video_id(youtube_input)
     if video_id:
         languages = list_available_transcripts(video_id)
-        unique_key = f"language_select_{video_id}_{uuid.uuid4()}"
-        selected_language = st.selectbox("Select Language", languages, key=unique_key)
-        st.session_state.selected_language = selected_language
+        if languages:
+            st.session_state.languages = languages  # Store available languages in session state
+            st.session_state.video_id = video_id  # Store the video ID in session state
+            st.session_state.show_language_select = True  # Show the language select box
+        else:
+            st.session_state.show_language_select = False
+            st.error("No available transcripts found for this video.")
+    else:
+        st.session_state.show_language_select = False
+        st.error("Please enter a valid YouTube URL or ID.")
+    st.session_state.youtube_input_changed = False
 
-        text, word_count = load_youtube_transcript(video_id, [selected_language])
+# Display language select box if available
+if st.session_state.get("show_language_select", False):
+    selected_language = st.selectbox("Select Language", st.session_state.languages, key="language_select")
+    if selected_language:
+        text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
         if word_count == 0:
             st.error(text)
         else:
             st.session_state.data["text"] = text
             st.session_state.data["word_count"] = word_count
     else:
-        st.error("Please enter a valid YouTube URL or ID.")
-    st.session_state.youtube_input_changed = False
+        st.error("Please select a language.")
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
