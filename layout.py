@@ -41,14 +41,17 @@ def create_main_area():
             if video_id:
                 languages = list_available_transcripts(video_id)
                 if languages:
-                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"
+                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"  
                     selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
                     st.session_state.selected_language = selected_language
                     st.session_state.video_id = video_id
                     st.session_state.languages = languages
+                    st.session_state.show_language_select = True
                 else:
+                    st.session_state.show_language_select = False
                     st.error("No available transcripts found for this video.")
             else:
+                st.session_state.show_language_select = False
                 st.error("Please enter a valid YouTube URL or ID.")
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language
