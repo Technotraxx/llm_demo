@@ -37,10 +37,10 @@ def create_main_area():
             if video_id:
                 languages = list_available_transcripts(video_id)
                 if languages:
-                    unique_key = f"language_select_{video_id}_{uuid.uuid4()}"
-                    selected_language = st.selectbox("Select Language", languages, key=unique_key)
+                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"  
+                    selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
                     st.session_state.selected_language = selected_language
-
+    
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language
 
 def create_output_area(summary, model_name):
