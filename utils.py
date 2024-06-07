@@ -60,7 +60,9 @@ def load_url(url):
     word_count = len(text.split())
     return text, word_count
 
-def load_youtube_transcript(video_id, languages=['en']):
+def load_youtube_transcript(video_id, languages=None):  # Entferne Standardwert
+    if languages is None:
+        languages = ['en']  # Verwende 'en' nur, wenn keine andere Sprache angegeben ist
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
         transcript = ' '.join([t['text'] for t in transcript_list])
