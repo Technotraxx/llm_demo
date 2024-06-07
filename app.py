@@ -59,9 +59,9 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
     if video_id:
         languages = list_available_transcripts(video_id)
         if languages:
-            selected_language = st.selectbox("Select Language", languages, key="language_select")
+            selected_language = st.selectbox("Select Language", languages, key=f"language_select_{video_id}")
         if selected_language:
-            text, word_count = load_youtube_transcript(video_id, selected_language)  # Pass the video_id and selected_language
+            text, word_count = load_youtube_transcript(video_id, [selected_language])  # Pass the video_id and selected_language
             if word_count == 0:
                 st.error(text)
             else:
