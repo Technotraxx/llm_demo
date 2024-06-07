@@ -60,12 +60,10 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
     if video_id:
         languages = list_available_transcripts(video_id)
         if languages:
-            # Verwende den in session_state gespeicherten Wert, falls vorhanden
-            if "selected_language" in st.session_state and st.session_state.selected_language:
-                selected_language = st.session_state.selected_language 
-
+            # Die Selectbox wurde bereits in create_main_area erstellt,
+            # daher müssen wir hier nur noch die ausgewählte Sprache verwenden.
             if selected_language:
-                text, word_count = load_youtube_transcript(video_id, [selected_language])
+                text, word_count = load_youtube_transcript(video_id, languages=[selected_language])
                 if word_count == 0:
                     st.error(text)
                 else:
