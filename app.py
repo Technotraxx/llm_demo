@@ -63,8 +63,13 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
             unique_key = f"language_select_{video_id}_{uuid.uuid4()}"
             selected_language = st.selectbox("Select Language", languages, key=unique_key)
             st.session_state.selected_language = selected_language
-        if st.session_state.selected_language:
-            text, word_count = load_youtube_transcript(video_id, [st.session_state.selected_language])  # Pass the video_id and selected_language
+        else:
+            # Setze die erste Sprache, wenn es nur eine Sprache gibt.
+            selected_language = languages[0] if languages else None 
+            st.session_state.selected_language = selected_language
+
+        if selected_language:  # Überprüfe, ob selected_language gesetzt ist.
+            text, word_count = load_youtube_transcript(video_id, [selected_language])
             if word_count == 0:
                 st.error(text)
             else:
