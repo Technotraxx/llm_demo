@@ -55,18 +55,16 @@ if youtube_input:
     st.session_state.youtube_input_changed = True
 
 # Check for YouTube input or submit button
-# Update session state when YouTube input changes
-if youtube_input:
-    st.session_state.youtube_input_changed = True
-
-# Check for YouTube input or submit button
 if youtube_input and (submit_youtube or st.session_state.get("youtube_input_changed", False)):
     video_id = extract_video_id(youtube_input)
     if video_id:
         languages = list_available_transcripts(video_id)
         if languages:
-            # Die Selectbox wurde bereits in create_main_area erstellt,
-            # daher müssen wir hier nur noch die ausgewählte Sprache verwenden.
+            # --- Änderung hier ---
+            # Verwende den in session_state gespeicherten Wert, falls vorhanden
+            if "selected_language" in st.session_state:
+                selected_language = st.session_state.selected_language
+
             if selected_language:
                 text, word_count = load_youtube_transcript(video_id, [selected_language])
                 if word_count == 0:
