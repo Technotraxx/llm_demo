@@ -24,8 +24,8 @@ def create_main_area():
         submit_url = st.button("Submit URL", key="submit_url")
 
     with tab3:
-        youtube_input = st.text_input("Enter YouTube URL", key="youtube_input")
-        submit_youtube = st.button("Submit YouTube URL", key="submit_youtube")
+        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
