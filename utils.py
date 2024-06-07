@@ -6,6 +6,7 @@ import pandas as pd
 import smtplib
 import chardet
 import requests
+import re
 
 from youtube_transcript_api import YouTubeTranscriptApi
 from bs4 import BeautifulSoup
