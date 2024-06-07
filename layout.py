@@ -36,15 +36,21 @@ def create_main_area():
         submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
         # Überprüfen der YouTube-URL/ID-Eingabe
-        if youtube_input:
+        if youtube_input and submit_youtube:
             video_id = extract_video_id(youtube_input)
             if video_id:
                 languages = list_available_transcripts(video_id)
                 if languages:
-                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"  
+                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"
                     selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
                     st.session_state.selected_language = selected_language
-    
+                    st.session_state.video_id = video_id
+                    st.session_state.languages = languages
+                else:
+                    st.error("No available transcripts found for this video.")
+            else:
+                st.error("Please enter a valid YouTube URL or ID.")
+
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language
 
 def create_output_area(summary, model_name):
