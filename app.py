@@ -2,7 +2,7 @@ import streamlit as st
 import os
 
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url, load_youtube_transcript, extract_video_id
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url, load_youtube_transcript, extract_video_id, list_available_transcripts
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
@@ -22,7 +22,7 @@ initialize_session_state()
 create_sidebar()
 
 # Create main area
-uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
+uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language = create_main_area()
 
 if uploaded_file:
     file_type = uploaded_file.name.split('.')[-1].lower()
@@ -57,12 +57,18 @@ if youtube_input:
 if youtube_input and (submit_youtube or st.session_state.get("youtube_input_changed", False)):
     video_id = extract_video_id(youtube_input)
     if video_id:
-        text, word_count = load_youtube_transcript(video_id)  # Pass the video_id directly
-        if word_count == 0:
-            st.error(text)
+        languages = list_available_transcripts(video_id)
+        if languages:
+            selected_language = st.selectbox("Select Language", languages, key="language_select")
+        if selected_language:
+            text, word_count = load_youtube_transcript(video_id, selected_language)  # Pass the video_id and selected_language
+            if word_count == 0:
+                st.error(text)
+            else:
+                st.session_state.data["text"] = text
+                st.session_state.data["word_count"] = word_count
         else:
-            st.session_state.data["text"] = text
-            st.session_state.data["word_count"] = word_count
+            st.error("Please select a language.")
     else:
         st.error("Please enter a valid YouTube URL or ID.")
     st.session_state.youtube_input_changed = False
