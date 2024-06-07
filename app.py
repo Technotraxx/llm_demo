@@ -49,6 +49,12 @@ if (url_input and st.session_state.get("url_input_changed")) or submit_url:
     st.session_state.data["word_count"] = word_count
     st.session_state.url_input_changed = False
 
+# Check for YouTube input or submit button
+if youtube_input and submit_youtube:
+    text, word_count = load_youtube_transcript(youtube_input)
+    st.session_state.data["text"] = text
+    st.session_state.data["word_count"] = word_count
+
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
         st.write(st.session_state.data["text"][:2000])  # Display the first 2000 characters
