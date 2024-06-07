@@ -74,14 +74,22 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
 
 # Display language select box if available
 if st.session_state.get("show_language_select", False):
-    selected_language = st.selectbox("Select Language", st.session_state.languages, key="language_select")
+    selected_language = st.selectbox(
+        "Select Language", 
+        st.session_state.languages, 
+        key="language_select", 
+        index=st.session_state.languages.index(st.session_state.get("selected_language", st.session_state.languages[0]))
+    )
     if selected_language:
+        st.session_state.selected_language = selected_language
         text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
         if word_count == 0:
             st.error(text)
         else:
-            st.session_state.data["text"] = text
-            st.session_state.data["word_count"] = word_count
+            st.session_state.data = {
+                "text": text,
+                "word_count": word_count
+            }
     else:
         st.error("Please select a language.")
 
