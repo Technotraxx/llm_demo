@@ -60,22 +60,30 @@ if youtube_input and (submit_youtube or st.session_state.get("youtube_input_chan
     if video_id:
         languages = list_available_transcripts(video_id)
         if languages:
-            # Die Selectbox wurde bereits in create_main_area erstellt,
-            # daher müssen wir hier nur noch die ausgewählte Sprache verwenden.
+            st.session_state.languages = languages  # Store available languages in session state
+            st.session_state.video_id = video_id  # Store the video ID in session state
+            st.session_state.show_language_select = True  # Show the language select box
+            # Speichern der ausgewählten Sprache in der Session
             if selected_language:
-                text, word_count = load_youtube_transcript(video_id, languages=[selected_language])
-                if word_count == 0:
-                    st.error(text)
-                else:
-                    st.session_state.data["text"] = text
-                    st.session_state.data["word_count"] = word_count
-            else:
-                st.error("Please select a language.")
+                st.session_state.selected_language = selected_language
         else:
             st.error("No available transcripts found for this video.")
     else:
         st.error("Please enter a valid YouTube URL or ID.")
     st.session_state.youtube_input_changed = False
+
+# Display language select box if available
+if st.session_state.get("show_language_select", False):
+    selected_language = st.selectbox("Select Language", st.session_state.languages, key="language_select", index=st.session_state.languages.index(st.session_state.get("selected_language", st.session_state.languages[0])))
+    if selected_language:
+        text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
+        if word_count == 0:
+            st.error(text)
+        else:
+            st.session_state.data["text"] = text
+            st.session_state.data["word_count"] = word_count
+    else:
+        st.error("Please select a language.")
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
