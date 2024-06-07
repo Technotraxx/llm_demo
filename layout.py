@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, send_email
+from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, extract_video_id, list_available_transcripts
 from datetime import datetime
 
 def create_sidebar():
