@@ -72,15 +72,15 @@ def load_youtube_transcript(youtube_input):
 def extract_video_id(url):
     # Match different YouTube URL formats and extract the video ID
     patterns = [
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+v=([^&]+)',
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/([^?&/]+)',
-        r'^[^&/]+$'  # Matches the video ID directly
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.be)/watch\?v=([^&]+)',
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.be)/([^?&/]+)',
+        r'^[a-zA-Z0-9_-]{11}$'  # Matches the video ID directly (YouTube IDs are always 11 characters)
     ]
     
     for pattern in patterns:
         match = re.match(pattern, url)
         if match:
-            return match.group(4) if 'v=' in match.group(0) else match.group(3)
+            return match.group(4) if 'watch?v=' in match.group(0) else match.group(3)
     
     return None
 
