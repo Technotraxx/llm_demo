@@ -60,6 +60,14 @@ def load_url(url):
     word_count = len(text.split())
     return text, word_count
 
+def list_available_transcripts(video_id):
+    try:
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        languages = [transcript.language_code for transcript in transcript_list]
+        return languages
+    except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
+        return []
+
 def load_youtube_transcript(youtube_input):
     video_id = extract_video_id(youtube_input)
     if not video_id:
