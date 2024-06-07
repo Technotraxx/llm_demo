@@ -22,7 +22,7 @@ initialize_session_state()
 create_sidebar()
 
 # Create main area
-uploaded_file, url_input, submit_url = create_main_area()
+uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
 
 if uploaded_file:
     file_type = uploaded_file.name.split('.')[-1].lower()
