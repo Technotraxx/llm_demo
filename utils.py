@@ -72,7 +72,10 @@ def load_youtube_transcript(video_id, languages=['en']):
 def list_available_transcripts(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        languages = [transcript.language_code for transcript in transcript_list]       
+        languages = [transcript.language_code for transcript in transcript_list]
+         if len(languages) == 1:
+            languages.append("Default")  # Füge ein Dummy-Element hinzu
+        return languages
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
         return []
 
