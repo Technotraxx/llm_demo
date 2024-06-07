@@ -59,12 +59,29 @@ def load_url(url):
     word_count = len(text.split())
     return text, word_count
 
-def load_youtube_transcript(youtube_url):
-    video_id = youtube_url.split('v=')[1]
+def load_youtube_transcript(youtube_input):
+    video_id = extract_video_id(youtube_input)
+    if not video_id:
+        return None, 0
     transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
     transcript = ' '.join([t['text'] for t in transcript_list])
     word_count = len(transcript.split())
     return transcript, word_count
+
+def extract_video_id(url):
+    # Match different YouTube URL formats and extract the video ID
+    patterns = [
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+v=([^&]+)',
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/([^?&/]+)',
+        r'^[^&/]+$'  # Matches the video ID directly
+    ]
+    
+    for pattern in patterns:
+        match = re.match(pattern, url)
+        if match:
+            return match.group(4) if 'v=' in match.group(0) else match.group(3)
+    
+    return None
 
 def reload_page():
     st.experimental_rerun()
