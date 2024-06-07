@@ -7,6 +7,7 @@ import smtplib
 import chardet
 import requests
 
+from youtube_transcript_api import YouTubeTranscriptApi
 from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -57,6 +58,13 @@ def load_url(url):
     text = ' '.join([para.get_text() for para in paragraphs])
     word_count = len(text.split())
     return text, word_count
+
+def load_youtube_transcript(youtube_url):
+    video_id = youtube_url.split('v=')[1]
+    transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+    transcript = ' '.join([t['text'] for t in transcript_list])
+    word_count = len(transcript.split())
+    return transcript, word_count
 
 def reload_page():
     st.experimental_rerun()
