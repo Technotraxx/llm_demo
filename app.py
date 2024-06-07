@@ -56,25 +56,25 @@ if youtube_input:
 
 # Check for YouTube input or submit button
 if youtube_input and (submit_youtube or st.session_state.get("youtube_input_changed", False)):
-    video_id = extract_video_id(youtube_input)
-    if video_id:
-        languages = list_available_transcripts(video_id)
-        if languages:
-            st.session_state.languages = languages  # Store available languages in session state
-            st.session_state.video_id = video_id  # Store the video ID in session state
-            st.session_state.show_language_select = True  # Show the language select box
-            # Speichern der ausgewählten Sprache in der Session
-            if selected_language:
-                st.session_state.selected_language = selected_language
+    if not st.session_state.get("languages"):
+        video_id = extract_video_id(youtube_input)
+        if video_id:
+            languages = list_available_transcripts(video_id)
+            if languages:
+                st.session_state.languages = languages
+                st.session_state.video_id = video_id
+                st.session_state.show_language_select = True
+            else:
+                st.session_state.show_language_select = False
+                st.error("No available transcripts found for this video.")
         else:
-            st.error("No available transcripts found for this video.")
-    else:
-        st.error("Please enter a valid YouTube URL or ID.")
+            st.session_state.show_language_select = False
+            st.error("Please enter a valid YouTube URL or ID.")
     st.session_state.youtube_input_changed = False
 
 # Display language select box if available
 if st.session_state.get("show_language_select", False):
-    selected_language = st.selectbox("Select Language", st.session_state.languages, key="language_select", index=st.session_state.languages.index(st.session_state.get("selected_language", st.session_state.languages[0])))
+    selected_language = st.selectbox("Select Language", st.session_state.languages, key="language_select")
     if selected_language:
         text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
         if word_count == 0:
