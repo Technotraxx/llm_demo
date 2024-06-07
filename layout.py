@@ -39,6 +39,7 @@ def create_main_area():
                 if languages:
                     unique_key = f"language_select_{video_id}_{uuid.uuid4()}"
                     selected_language = st.selectbox("Select Language", languages, key=unique_key)
+                    st.session_state.selected_language = selected_language
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language
 
