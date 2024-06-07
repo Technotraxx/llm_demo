@@ -2,7 +2,7 @@ import streamlit as st
 import os
 
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url, load_youtube_transcript
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
@@ -42,18 +42,23 @@ if uploaded_file:
 if url_input:
     st.session_state.url_input_changed = True
 
-# Check for submit button or URL input change
-if (url_input and st.session_state.get("url_input_changed")) or submit_url:
+# Check for URL input or submit button
+if url_input and (submit_url or st.session_state.get("url_input_changed", False)):
     text, word_count = load_url(url_input)
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
     st.session_state.url_input_changed = False
 
+# Update session state when YouTube input changes
+if youtube_input:
+    st.session_state.youtube_input_changed = True
+
 # Check for YouTube input or submit button
-if youtube_input and submit_youtube:
+if youtube_input and (submit_youtube or st.session_state.get("youtube_input_changed", False)):
     text, word_count = load_youtube_transcript(youtube_input)
     st.session_state.data["text"] = text
     st.session_state.data["word_count"] = word_count
+    st.session_state.youtube_input_changed = False
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
