@@ -3,7 +3,9 @@ import os
 import uuid
 
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url
+from utils import (save_text, save_csv, save_doc, save_xls, send_email,
+                   reload_page, generate_unique_filename, load_pdf, load_docx,
+                   load_txt, load_csv, load_url)
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
@@ -53,11 +55,11 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
 
 # Check for Youtube or ID input or submit button
 if youtube_input and submit_youtube:
-    result = process_youtube_input(youtube_input)
-    if result:
-        st.session_state.data = result
+    result = process_youtube_input(youtube_input) 
+    if result: 
+        st.session_state.data.update(result) # Update session state with YouTube data
     else:
-        st.session_state.data = None
+        st.warning("Failed to process YouTube input.") # Provide a general warning
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
