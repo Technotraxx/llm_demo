@@ -25,8 +25,14 @@ def create_main_area():
     # Debugging: Anzeige des aktuellen Tabs
     st.write(f"Active Tab: {active_tab}")
 
-    # Create tabs and determine the active tab
-    tab1, tab2, tab3 = st.tabs(tab_labels)
+    # Create tabs and set the active tab based on the session state
+    if active_tab == "Upload":
+        tab1, tab2, tab3 = st.tabs([tab_labels[0], tab_labels[1], tab_labels[2]])
+    elif active_tab == "URL":
+        tab2, tab1, tab3 = st.tabs([tab_labels[1], tab_labels[0], tab_labels[2]])
+    else:
+        tab3, tab1, tab2 = st.tabs([tab_labels[2], tab_labels[0], tab_labels[1]])
+
     uploaded_file, url_input, submit_url, youtube_input, submit_youtube = None, None, None, None, None
 
     with tab1:
