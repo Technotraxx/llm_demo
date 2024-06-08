@@ -73,6 +73,3 @@ def process_youtube_input(youtube_input):
                 "text": transcript_data["text"],
                 "word_count": transcript_data["word_count"]
             }
-    else:
-        print("No language selected.") # Debug: Should not happen if languages exist
-        return None
