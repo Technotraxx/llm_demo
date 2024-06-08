@@ -85,4 +85,3 @@ def handle_language_selection():
         
         st.session_state.data.update({'text': text_data['text'], 'word_count': text_data['word_count'], 'selected_language': selected_language})
         st.session_state.show_language_select = False
-        st.rerun()
