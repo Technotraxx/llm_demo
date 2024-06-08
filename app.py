@@ -7,7 +7,7 @@ from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_pa
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
-from youtube_api import process_youtube_input, load_youtube_transcript
+from youtube_api import load_youtube_transcript
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -52,6 +52,19 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.url_input_changed = False
 
 # Check for Youtube or ID input or submit button
+def process_youtube_input(youtube_input):
+    video_id = extract_video_id(youtube_input)
+    if not video_id:
+        st.error("Please enter a valid YouTube URL or ID.")
+        return None
+
+    languages = list_available_transcripts(video_id)
+    if not languages:
+        st.error("No available transcripts found for this video.")
+        return None
+
+    return video_id, languages
+
 if youtube_input and submit_youtube:
     result = process_youtube_input(youtube_input)
     if result:
@@ -67,8 +80,8 @@ if youtube_input and submit_youtube:
 
 if st.session_state.get("show_language_select", False):
     selected_language = st.selectbox(
-        "Select Language", 
-        st.session_state.languages, 
+        "Select Language",
+        st.session_state.languages,
         key=f"language_select_{st.session_state['video_id']}"
     )
     if selected_language:
