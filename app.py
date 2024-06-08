@@ -3,7 +3,8 @@ import os
 
 from templates import prompt_templates
 from utils import reload_page
-from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, initialize_session_state, handle_template_selection
+from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, handle_template_selection
+from config import initialize_session_state, create_sidebar as config_create_sidebar
 from api_helpers import initialize_clients, generate_summary
 from youtube_api import handle_youtube_input, handle_language_selection
 
@@ -19,7 +20,7 @@ openai_client, claude_client, genai = initialize_clients()
 initialize_session_state()
 
 # Sidebar settings
-create_sidebar()
+config_create_sidebar()
 
 # Create main area
 uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
