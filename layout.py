@@ -32,29 +32,13 @@ def create_main_area():
 
     # Tab 3: YouTube URL/ID-Eingabe
     with tab3:
-        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
+    youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+    submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
-        # Überprüfen der YouTube-URL/ID-Eingabe
-        if youtube_input and submit_youtube:
-            video_id = extract_video_id(youtube_input)
-            if video_id:
-                languages = list_available_transcripts(video_id)
-                if languages:
-                    unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"  
-                    selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
-                    st.session_state.selected_language = selected_language
-                    st.session_state.video_id = video_id
-                    st.session_state.languages = languages
-                    st.session_state.show_language_select = True
-                else:
-                    st.session_state.show_language_select = False
-                    st.error("No available transcripts found for this video.")
-            else:
-                st.session_state.show_language_select = False
-                st.error("Please enter a valid YouTube URL or ID.")
-
-    return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, selected_language
+    if youtube_input and submit_youtube:
+        process_youtube_input(youtube_input)
+        
+return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, st.session_state.get("selected_language")
 
 def create_output_area(summary, model_name):
     if summary:
