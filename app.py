@@ -67,7 +67,7 @@ if youtube_input and submit_youtube:
         if len(result['languages']) > 1:
             # Multiple languages - set the flag to True
             st.session_state.languages_loaded = True
-            st.experimental_rerun() # Rerun to display language selection
+            st.rerun() # Rerun to display language selection
 
         else:
             # Only one language, load the transcript directly
