@@ -80,7 +80,6 @@ if st.session_state.get('show_language_select', False):
     text, word_count = load_youtube_transcript(st.session_state.data['video_id'], selected_language) # Use the function directly
     st.session_state.data.update({'text': text, 'word_count': word_count, 'selected_language': selected_language})
     st.session_state.show_language_select = False  # Hide the selection box
-    time.sleep(0.1)
     st.rerun()  # Refresh UI to display the selected transcript
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
