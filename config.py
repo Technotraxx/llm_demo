@@ -37,7 +37,7 @@ def reset_session_state():
         "text": ""
     }
     st.session_state.template_name = "Default Template"
-    st.rerun()  # Replace st.experimental_rerun with st.rerun
+    st.rerun()
 
 MODEL_OPTIONS = {
     "OpenAI GPT-4o": ["gpt-4o", "gpt-3.5-turbo-16k"],
@@ -51,8 +51,7 @@ def filter_models(api_choice):
         st.session_state.settings["model_name"] = model_options[0] if model_options else None
     return model_options
 
-def create_sidebar():
-    # Model and API selection
+def create_api_sidebar():
     api_choice_index = st.session_state.settings.get("api_provider_index", 1)
     api_providers = ["OpenAI GPT-4o", "Anthropic Claude 3", "Google Gemini"]
     api_choice = st.sidebar.selectbox(
@@ -62,7 +61,9 @@ def create_sidebar():
         key="api_provider"
     )
     st.session_state.settings["api_provider_index"] = api_providers.index(api_choice)
+    return api_choice
 
+def create_model_sidebar(api_choice):
     model_options = filter_models(api_choice)
     model_name_index = st.session_state.settings.get("model_name_index", 0)
     if model_name_index >= len(model_options):
@@ -74,8 +75,9 @@ def create_sidebar():
         key="model_name"
     )
     st.session_state.settings["model_name_index"] = model_options.index(model_name)
+    return model_name
 
-    # Einstellungsoptionen
+def create_settings_sidebar(model_name):
     temperature = st.sidebar.slider(
         "Temperature", 
         min_value=0.0, 
@@ -96,6 +98,10 @@ def create_sidebar():
     )
     st.session_state.settings["max_tokens"] = max_tokens
 
-    # Reset-Button in der Sidebar
+def create_sidebar():
+    api_choice = create_api_sidebar()
+    model_name = create_model_sidebar(api_choice)
+    create_settings_sidebar(model_name)
+
     if st.sidebar.button("Reset", key="reset_button"):
         reset_session_state()
