@@ -57,19 +57,7 @@ if youtube_input:
 # Check for YouTube input or submit button
 if youtube_input and (submit_youtube or st.session_state.get("youtube_input_changed", False)):
     if not st.session_state.get("languages"):
-        video_id = extract_video_id(youtube_input)
-        if video_id:
-            languages = list_available_transcripts(video_id)
-            if languages:
-                st.session_state.languages = languages
-                st.session_state.video_id = video_id
-                st.session_state.show_language_select = True
-            else:
-                st.session_state.show_language_select = False
-                st.error("No available transcripts found for this video.")
-        else:
-            st.session_state.show_language_select = False
-            st.error("Please enter a valid YouTube URL or ID.")
+        process_youtube_input(youtube_input)
     st.session_state.youtube_input_changed = False
 
 # Display language select box if available
