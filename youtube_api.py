@@ -5,71 +5,51 @@ from youtube_transcript_api import (YouTubeTranscriptApi, VideoUnavailable,
 import streamlit as st
 
 def extract_video_id(url):
-    print("Extracting video ID...")  # Debug: Check if function is called
     # Combine patterns into a single, more efficient regex
     pattern = r'(?:https?://)?(?:www\.)?(?:youtube\.com|youtu\.be)/(?:watch\?v=|)([a-zA-Z0-9_-]{11})'
     match = re.match(pattern, url)
+
     if match:
-        video_id = match.group(1)
-        print(f"Found video ID: {video_id}") # Debug: Print extracted ID
-        return video_id
-    else:
-        print("No video ID found.") # Debug: Indicate no match found
-        return None
+        return match.group(1)
+
+    return None
 
 def list_available_transcripts(video_id):
-    print(f"Listing transcripts for video ID: {video_id}") # Debug
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
         languages = [transcript.language_code for transcript in transcript_list]
-        print(f"Available languages: {languages}") # Debug: Show found languages
         return languages
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        print(f"Error listing transcripts: {e}") # Debug: Print the error
-        st.error(f"Error: {str(e)}") # Show error to the user
         return []
 
-def load_youtube_transcript(video_id, selected_language):
-    print(f"Loading transcript for video ID: {video_id}, Language: {selected_language}")
+def load_youtube_transcript(video_id, languages=['en']):
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=[selected_language])
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
         transcript = ' '.join([t['text'] for t in transcript_list])
         word_count = len(transcript.split())
-        print(f"Transcript loaded successfully. Word count: {word_count}")
-        return {
-            "text": transcript,
-            "word_count": word_count
-        }
+        return transcript, word_count
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        print(f"Error loading transcript: {e}") # Debug: Print the error
-        st.error(f"Error: {str(e)}") # Show error to the user
-        return {"error": str(e), "success": False}
+        return {"error": str(e), "success": False} # Return error details
 
 def process_youtube_input(youtube_input):
-    print("Processing YouTube input...") 
     video_id = extract_video_id(youtube_input)
     if not video_id:
+        st.error("Please enter a valid YouTube URL or ID.")
         return None
 
     languages = list_available_transcripts(video_id)
     if not languages:
-        return None
-    
-    print("Creating language selection box...") # Debug
+        st.error("No available transcripts found for this video.")
+        return None 
+
     unique_key = f"language_select_{uuid.uuid4()}"
     selected_language = st.selectbox("Select Language", languages, key=unique_key)
-    print(f"Selected language: {selected_language}") # Debug
 
-    if selected_language:
-        transcript_data = load_youtube_transcript(video_id, selected_language)
-        if "error" in transcript_data:
-            return None
-        else:
-            print("Returning processed YouTube data...") # Debug
-            return {
-                "video_id": video_id,
-                "languages": languages,
-                "selected_language": selected_language,
-                "text": transcript_data["text"],
-                "word_count": transcript_data["word_count"]
-            }
+    if selected_language: 
+        return {
+            "video_id": video_id,
+            "selected_language": selected_language 
+        } # Store only essential information in session state
+    else:
+        st.info("Please select a language to load the transcript.")
+        return None
