@@ -73,7 +73,7 @@ def handle_youtube_input(youtube_input):
 def handle_language_selection():
     if st.session_state.get('show_language_select', False):
         st.write("Select Transcript Language:")
-        selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
+        selected_language = st.selectbox("Select Language", st.session_state.data['languages'], key='selected_language_selectbox')
         
         # Debugging: Überprüfen der Auswahl der Sprache
         st.write(f"Selected Language: {selected_language}")
@@ -85,3 +85,4 @@ def handle_language_selection():
         
         st.session_state.data.update({'text': text_data['text'], 'word_count': text_data['word_count'], 'selected_language': selected_language})
         st.session_state.show_language_select = False
+        # Entfernen des st.rerun(), um das erneute Laden der Seite zu verhindern
