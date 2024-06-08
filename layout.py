@@ -4,7 +4,7 @@ from datetime import datetime
 
 from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
-from youtube_api import process_youtube_input  # Importiere die neue Datei ohne Sprachauswahl
+from youtube_api import process_youtube_input
 
 def create_sidebar():
     st.sidebar.title("Settings")
@@ -21,9 +21,6 @@ def create_main_area():
 
     # Get the active tab from session state
     active_tab = st.session_state.active_tab
-
-    # Debugging: Anzeige des aktuellen Tabs
-    st.write(f"Active Tab: {active_tab}")
 
     # Create tabs and determine the active tab
     tab1, tab2, tab3 = st.tabs(tab_labels)
@@ -51,9 +48,6 @@ def create_main_area():
         st.session_state.active_tab = "URL"
     if submit_youtube:
         st.session_state.active_tab = "YouTube"
-
-    # Debugging: Anzeige des aktualisierten Tabs
-    st.write(f"Updated Active Tab: {st.session_state.active_tab}")
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
