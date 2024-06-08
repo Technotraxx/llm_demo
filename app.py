@@ -63,30 +63,30 @@ if youtube_input and submit_youtube:
     result = process_youtube_input(youtube_input)
     if result:
         st.session_state.data.update(result)
-
         if len(result['languages']) > 1:
-            # Multiple languages - set the flag to True
-            st.session_state.languages_loaded = True
-            st.rerun() # Rerun to display language selection
-
+            # Multiple languages - show selection
+            st.session_state.show_language_select = True 
         else:
-            # Only one language, load the transcript directly
+            # Single language - load directly
             transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
             st.session_state.data.update(transcript_data)
+    else:
+        st.warning("Failed to process YouTube input.")
 
-# Language Selection (only if multiple languages are available)
-if st.session_state.languages_loaded: 
-    selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
+# Language Selection Section 
+if st.session_state.data.get('languages') and st.session_state.get('show_language_select', False):
+    st.write("Select Transcript Language:") # Clearer heading
+    selected_language = st.selectbox("", st.session_state.data['languages']) # No key needed here
     st.session_state.data['selected_language'] = selected_language
+    st.session_state.show_language_select = False # Hide selection after choice
 
-    # Load transcript after language selection
+    # Load Transcript after language selection
     transcript_data = load_youtube_transcript(
-        st.session_state.data['video_id'], 
+        st.session_state.data['video_id'],
         st.session_state.data['selected_language'] 
     )
     st.session_state.data.update(transcript_data)
-    st.session_state.languages_loaded = False # Reset the flag
-    st.rerun() # Rerun to display the transcript
+    st.rerun()  # Refresh UI to display the selected transcript 
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
