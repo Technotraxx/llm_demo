@@ -1,20 +1,18 @@
 import streamlit as st
 import uuid
+from datetime import datetime
 
 from utils import (save_text, save_csv, save_doc, save_xls, send_email,
                    reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
 from youtube_api import process_youtube_input, load_youtube_transcript
-from datetime import datetime
 
 def create_sidebar():
-    # Sidebar für Modell-Auswahl und Einstellungen
     st.sidebar.title("Settings")
 
 def create_main_area():
     st.title("Text Summarizer with Multiple LLMs")
 
-    # Tabs for Upload, URL, and YouTube
     tab1, tab2, tab3 = st.tabs(["Upload", "URL", "YouTube"])
 
     uploaded_file = None
@@ -36,23 +34,44 @@ def create_main_area():
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
+def handle_uploaded_file(uploaded_file):
+    if uploaded_file:
+        file_type = uploaded_file.name.split('.')[-1].lower()
+        if file_type == 'pdf':
+            text, word_count = load_pdf(uploaded_file)
+        elif file_type == 'docx':
+            text, word_count = load_docx(uploaded_file)
+        elif file_type == 'txt':
+            text, word_count = load_txt(uploaded_file)
+        elif file_type == 'csv':
+            text, word_count = load_csv(uploaded_file)
+
+        st.session_state.data["text"] = text
+        st.session_state.data["word_count"] = word_count
+
+def handle_url_input(url_input, submit_url):
+    if url_input:
+        st.session_state.url_input_changed = True
+
+    if url_input and (submit_url or st.session_state.get("url_input_changed", False)):
+        text, word_count = load_url(url_input)
+        st.session_state.data["text"] = text
+        st.session_state.data["word_count"] = word_count
+        st.session_state.url_input_changed = False
+
 def create_output_area(summary, model_name):
     if summary:
-        # Aktuelles Datum und Uhrzeit in deutscher Schreibweise
         now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-
         st.header("Output:")
         st.markdown(f"**Created with {model_name}** am _{now}_.")
 
         st.markdown(summary)
         st.divider()
 
-        # Display the summary using markdown
         with st.expander("Copy to Clipboard"):
             st.code(summary, language='markdown', line_numbers=True)
 
         with st.expander("Save and Send Options"):
-            # Save options
             st.write("Save the summary:")
             col1, col2, col3, col4 = st.columns(4)
             with col1:
@@ -84,7 +103,6 @@ def create_output_area(summary, model_name):
                     with open(filename, "rb") as file:
                         st.download_button(label="Download XLS", data=file, file_name=filename, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-            # Email option
             st.write("Send the summary via email:")
             email_address = st.text_input("Email address", key="email_address")
             if st.button("Send Email", key="send_email_button"):
