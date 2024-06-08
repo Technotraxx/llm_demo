@@ -9,7 +9,7 @@ from utils import (save_text, save_csv, save_doc, save_xls, send_email,
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients, generate_summary
-from youtube_api import process_youtube_input, load_youtube_transcript
+from youtube_api import process_youtube_input, load_youtube_transcript, handle_youtube_input, handle_language_selection
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -53,35 +53,13 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.data["word_count"] = word_count
     st.session_state.url_input_changed = False
 
-# Check for Youtube or ID input or submit button
-# Initialize a session state variable to track if languages are loaded
-if "languages_loaded" not in st.session_state:
-    st.session_state.languages_loaded = False 
-
-# YouTube Input Handling 
+# Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
-    result = process_youtube_input(youtube_input)
-    if result:
-        st.session_state.data.update(result)
-        if len(result['languages']) > 1:
-            # Multiple languages - prepare for selection 
-            st.session_state.show_language_select = True
-        else:
-            # Single language - load directly
-            text, word_count = load_youtube_transcript(result['video_id'], result['languages'][0]) # Use the function directly
-            st.session_state.data.update({'text': text, 'word_count': word_count})
-    else:
-        st.warning("Failed to process YouTube input.")
+    handle_youtube_input(youtube_input)
 
-# Language Selection Section (only shown if needed)
-if st.session_state.get('show_language_select', False):
-    st.write("Select Transcript Language:")
-    selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
-    text, word_count = load_youtube_transcript(st.session_state.data['video_id'], selected_language) # Use the function directly
-    st.session_state.data.update({'text': text, 'word_count': word_count, 'selected_language': selected_language})
-    st.session_state.show_language_select = False  # Hide the selection box
-    st.rerun()  # Refresh UI to display the selected transcript
-        
+# Handle language selection for YouTube transcript
+handle_language_selection()
+
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
         st.write(st.session_state.data["text"][:2000])  # Display the first 2000 characters
