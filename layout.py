@@ -21,8 +21,8 @@ def create_main_area():
     if 'active_tab' not in st.session_state:
         st.session_state['active_tab'] = 'Upload'
 
-    # Function to handle input based on the active tab
-    def handle_tab_input(tab):
+    # Function to simulate tab switching and handle input
+    def display_tab_content(tab):
         if tab == 'Upload':
             return st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
         elif tab == 'URL':
@@ -35,26 +35,21 @@ def create_main_area():
             return youtube_input, submit_youtube
 
     # Display content based on active tab
-    uploaded_file = url_input = submit_url = youtube_input = submit_youtube = None
+    uploaded_file = display_tab_content('Upload')
+    url_input, submit_url = display_tab_content('URL')
+    youtube_input, submit_youtube = display_tab_content('YouTube')
 
-    if st.session_state['active_tab'] == 'Upload':
-        uploaded_file = handle_tab_input('Upload')
-    elif st.session_state['active_tab'] == 'URL':
-        url_input, submit_url = handle_tab_input('URL')
-    elif st.session_state['active_tab'] == 'YouTube':
-        youtube_input, submit_youtube = handle_tab_input('YouTube')
+    if youtube_input and submit_youtube:
+        result = process_youtube_input(youtube_input)
+        if result:
+            st.session_state.data.update(result)
 
-        if youtube_input and submit_youtube:
-            result = process_youtube_input(youtube_input)
-            if result:
-                st.session_state.data.update(result)
-
-                if len(result['languages']) > 1:
-                    st.session_state['show_language_select'] = True
-                    st.experimental_rerun()
-                else:
-                    transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
-                    st.session_state.data.update(transcript_data)
+            if len(result['languages']) > 1:
+                st.session_state['show_language_select'] = True
+                st.rerun()
+            else:
+                transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
+                st.session_state.data.update(transcript_data)
 
     # Show language selection dropdown only if needed
     if st.session_state.get('show_language_select', False):
