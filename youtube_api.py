@@ -37,15 +37,3 @@ def extract_video_id(url):
         return match.group(1)
     else:
         return None
-
-def process_youtube_input(youtube_input):
-    video_id = extract_video_id(youtube_input)
-    if video_id:
-        languages = list_available_transcripts(video_id)
-        if languages:
-            return video_id, languages
-        else:
-            st.error("No available transcripts found for this video.")
-    else:
-        st.error("Please enter a valid YouTube URL or ID.")
-    return None
