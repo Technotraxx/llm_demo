@@ -22,26 +22,8 @@ initialize_session_state()
 # Sidebar settings
 config_create_sidebar()
 
-# Create main area and set the active tab
-tab_labels = ["Upload", "URL", "YouTube"]
-if 'active_tab' not in st.session_state:
-    st.session_state.active_tab = tab_labels[0]
-
-active_tab = st.session_state.active_tab
-
-tab1, tab2, tab3 = st.tabs(tab_labels)
-
-if active_tab == "Upload":
-    with tab1:
-        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
-elif active_tab == "URL":
-    with tab2:
-        url_input = st.text_input("Enter URL", key="url_input")
-        submit_url = st.button("Submit URL", key="submit_url")
-else:
-    with tab3:
-        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
+# Create main area
+uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
 
 # Handle uploaded file
 handle_uploaded_file(uploaded_file)
@@ -52,7 +34,6 @@ handle_url_input(url_input, submit_url)
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
     handle_youtube_input(youtube_input)
-    st.session_state.active_tab = "YouTube"
 
 # Handle language selection for YouTube transcript
 handle_language_selection()
