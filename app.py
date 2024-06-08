@@ -27,18 +27,22 @@ uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_mai
 
 # Handle uploaded file
 if uploaded_file:
-    st.session_state.active_tab = "Upload"
+    st.write("Handling uploaded file")
     handle_uploaded_file(uploaded_file)
 
 # Handle URL input
 if url_input and submit_url:
+    st.write("Handling URL input")
     st.session_state.active_tab = "URL"
     handle_url_input(url_input, submit_url)
 
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
+    st.write("Handling YouTube input")
     st.session_state.active_tab = "YouTube"
     handle_youtube_input(youtube_input)
+
+st.write(f"Current Tab: {st.session_state.get('active_tab', 'None')}")
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
