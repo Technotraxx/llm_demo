@@ -66,36 +66,34 @@ def process_youtube_input(youtube_input):
     return video_id, languages
 
 if youtube_input and submit_youtube:
-    result = process_youtube_input(youtube_input)
-    if result:
-        video_id, languages = result
-        unique_key = f"language_select_{uuid.uuid4()}"
-        selected_language = st.selectbox("Select Language", languages, key=unique_key)
-        st.session_state.selected_language = selected_language
-        st.session_state.video_id = video_id
-        st.session_state.languages = languages
-        st.session_state.show_language_select = True
+    video_id = extract_video_id(youtube_input)
+    if video_id:
+        languages = list_available_transcripts(video_id)
+        if languages:
+            unique_key = f"language_select_{uuid.uuid4()}"
+            selected_language = st.selectbox("Select Language", languages, key=unique_key)
+            st.session_state.selected_language = selected_language
+            st.session_state.video_id = video_id
+            st.session_state.languages = languages
+            st.session_state.show_language_select = True
+            
+            if selected_language:
+                text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
+                if word_count == 0:
+                    st.error(text)
+                else:
+                    st.session_state.data = {
+                        "text": text,
+                        "word_count": word_count
+                    }
+            else:
+                st.error("Please select a language.")
+        else:
+            st.session_state.show_language_select = False
+            st.error("No available transcripts found for this video.")
     else:
         st.session_state.show_language_select = False
-
-if st.session_state.get("show_language_select", False):
-    selected_language = st.selectbox(
-        "Select Language",
-        st.session_state.languages,
-        key=f"language_select_{st.session_state['video_id']}"
-    )
-    if selected_language:
-        st.session_state.selected_language = selected_language
-        text, word_count = load_youtube_transcript(st.session_state.video_id, [selected_language])
-        if word_count == 0:
-            st.error(text)
-        else:
-            st.session_state.data = {
-                "text": text,
-                "word_count": word_count
-            }
-    else:
-        st.error("Please select a language.")
+        st.error("Please enter a valid YouTube URL or ID.")
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
