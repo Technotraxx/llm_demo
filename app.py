@@ -55,9 +55,13 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
 
 # Check for Youtube or ID input or submit button
 if youtube_input and submit_youtube:
+    print("Youtube input submitted") # Debug
     result = process_youtube_input(youtube_input) 
+    print(f"Result from process_youtube_input: {result}") # Debug
     if result: 
         st.session_state.data.update(result) # Update session state with YouTube data
+        # After updating session state, reload the page to refresh the UI
+        st.experimental_rerun()
     else:
         st.warning("Failed to process YouTube input.") # Provide a general warning
         
