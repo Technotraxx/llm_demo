@@ -50,8 +50,8 @@ if st.button("Generate Summary"):
     prompt_with_text = st.session_state.settings["prompt"].replace("{text}", st.session_state.data["text"])
 
     # Debugging: Überprüfen der ausgewählten Modell-Optionen
-    st.write(f"Selected Model: {st.session_state.settings['model_name']}")
-    st.write(f"API Provider Index: {st.session_state.settings['api_provider_index']}")
+    # st.write(f"Selected Model: {st.session_state.settings['model_name']}")
+    # st.write(f"API Provider Index: {st.session_state.settings['api_provider_index']}")
 
     with st.spinner("Generating summary..."):
         try:
@@ -68,8 +68,8 @@ if st.button("Generate Summary"):
             st.session_state.data["model_used"] = model_used
 
             # Debugging: Überprüfen der generierten Zusammenfassung
-            st.write(f"Generated Summary: {summary}")
-            st.write(f"Model Used: {model_used}")
+            # st.write(f"Generated Summary: {summary}")
+            # st.write(f"Model Used: {model_used}")
 
         except Exception as e:
             st.session_state.data["summary"] = f"An error occurred during the API call: {str(e)}"
