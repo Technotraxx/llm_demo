@@ -58,18 +58,6 @@ def handle_url_input(url_input, submit_url):
         st.session_state.data["word_count"] = word_count
         st.session_state.url_input_changed = False
 
-def initialize_session_state():
-    if "data" not in st.session_state:
-        st.session_state.data = {}
-    if "settings" not in st.session_state:
-        st.session_state.settings = {
-            "prompt": "",
-            "model_name": "gpt-3.5-turbo",
-            "temperature": 0.7,
-            "max_tokens": 150,
-            "api_provider_index": 0
-        }
-
 def handle_template_selection(prompt_templates):
     template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()), key="template_name")
 
