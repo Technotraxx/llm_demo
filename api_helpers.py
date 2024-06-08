@@ -69,12 +69,13 @@ def get_gemini_response(model_name, prompt, temperature, max_tokens):
 
 def generate_summary(openai_client, claude_client, model_name, prompt, temperature, max_tokens, api_provider_index):
     st.write(f"Generating summary with model: {model_name} and provider index: {api_provider_index}")
-    if api_provider_index == 0:  # OpenAI GPT-4o
-        return get_openai_response(openai_client, model_name, prompt, temperature, max_tokens), "GPT-4o"
+    if api_provider_index == 0:  # OpenAI
+        return get_openai_response(openai_client, model_name, prompt, temperature, max_tokens), model_name
     elif api_provider_index == 1:  # Anthropic Claude 3
         return get_claude_response(claude_client, model_name, prompt, temperature, max_tokens), model_name
     elif api_provider_index == 2:  # Google Gemini
         return get_gemini_response(model_name, prompt, temperature, max_tokens), model_name
     else:
         raise ValueError("Invalid API provider index")
+
 
