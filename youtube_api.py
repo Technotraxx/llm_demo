@@ -1,6 +1,7 @@
 import re
 import uuid
-from youtube_transcript_api import YouTubeTranscriptApi, VideoUnavailable, TranscriptsDisabled, NoTranscriptFound
+from youtube_transcript_api import (YouTubeTranscriptApi, VideoUnavailable,
+                                   TranscriptsDisabled, NoTranscriptFound)
 import streamlit as st
 
 def extract_video_id(url):
@@ -28,7 +29,7 @@ def load_youtube_transcript(video_id, languages=['en']):
         word_count = len(transcript.split())
         return transcript, word_count
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        return f"Error: {str(e)}", 0
+        return {"error": str(e), "success": False} # Return error details
 
 def process_youtube_input(youtube_input):
     video_id = extract_video_id(youtube_input)
@@ -39,24 +40,16 @@ def process_youtube_input(youtube_input):
     languages = list_available_transcripts(video_id)
     if not languages:
         st.error("No available transcripts found for this video.")
-        return None
+        return None 
 
     unique_key = f"language_select_{uuid.uuid4()}"
     selected_language = st.selectbox("Select Language", languages, key=unique_key)
 
-    if selected_language:
-        text, word_count = load_youtube_transcript(video_id, [selected_language])
-        if word_count == 0:
-            st.error(text)
-            return None
-        else:
-            return {
-                "video_id": video_id,
-                "languages": languages,
-                "selected_language": selected_language,
-                "text": text,
-                "word_count": word_count
-            }
+    if selected_language: 
+        return {
+            "video_id": video_id,
+            "selected_language": selected_language 
+        } # Store only essential information in session state
     else:
         st.info("Please select a language to load the transcript.")
         return None
