@@ -38,6 +38,10 @@ if youtube_input and submit_youtube:
 # Handle language selection for YouTube transcript
 handle_language_selection()
 
+# Debugging: Überprüfen der Daten im Session State
+if "data" in st.session_state:
+    st.write(f"Session State Data: {st.session_state.data}")
+
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
         st.write(st.session_state.data["text"][:2000])  # Display the first 2000 characters
