@@ -72,10 +72,7 @@ def load_youtube_transcript(video_id, languages=['en']):
 def list_available_transcripts(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        languages = [transcript.language_code for transcript in transcript_list]
-        if len(languages) == 1:
-            languages.append("Default")  # Füge ein Dummy-Element hinzu
-        return languages
+        return [transcript.language_code for transcript in transcript_list]
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
         return []
 
@@ -91,6 +88,25 @@ def extract_video_id(url):
             return match.group(1)
     
     return None
+
+def process_youtube_input(youtube_input):
+    video_id = extract_video_id(youtube_input)
+    if video_id:
+        languages = list_available_transcripts(video_id)
+        if languages:
+            unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"
+            selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
+            st.session_state.selected_language = selected_language
+            st.session_state.video_id = video_id
+            st.session_state.languages = languages
+            st.session_state.show_language_select = True
+        else:
+            st.session_state.show_language_select = False
+            st.error("No available transcripts found for this video.")
+    else:
+        st.session_state.show_language_select = False
+        st.error("Please enter a valid YouTube URL or ID.")
+
     
 def reload_page():
     st.experimental_rerun()
