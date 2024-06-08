@@ -4,22 +4,13 @@ from youtube_transcript_api import YouTubeTranscriptApi, VideoUnavailable, Trans
 import streamlit as st
 
 def extract_video_id(url):
-    patterns = [
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.be)/watch\?v=([^&]+)',
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/([^?&/]+)',
-        r'^[a-zA-Z0-9_-]{11}$'  # Matches the video ID directly (YouTube IDs are always 11 characters)
-    ]
-    
-    for pattern in patterns:
-        match = re.match(pattern, url)
-        if match:
-            if 'watch?v=' in match.group(0):
-                return match.group(4)
-            elif 'youtu.be/' in match.group(0):
-                return match.group(3)
-            else:
-                return match.group(0)
-    
+    # Combine patterns into a single, more efficient regex
+    pattern = r'(?:https?://)?(?:www\.)?(?:youtube\.com|youtu\.be)/(?:watch\?v=|)([a-zA-Z0-9_-]{11})'
+    match = re.match(pattern, url)
+
+    if match:
+        return match.group(1)
+
     return None
 
 def list_available_transcripts(video_id):
