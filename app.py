@@ -6,7 +6,7 @@ from utils import reload_page
 from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, handle_template_selection
 from config import initialize_session_state, create_sidebar as config_create_sidebar
 from api_helpers import initialize_clients, generate_summary
-from youtube_api import handle_youtube_input
+from youtube_api import handle_youtube_input  # Importiere die neue Datei ohne Sprachauswahl
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -27,14 +27,19 @@ uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_mai
 
 # Handle uploaded file
 if uploaded_file:
+    st.write("Handling uploaded file")
     handle_uploaded_file(uploaded_file)
 
 # Handle URL input
 if url_input and submit_url:
+    st.write("Handling URL input")
+    st.session_state.active_tab = "URL"
     handle_url_input(url_input, submit_url)
 
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
+    st.write("Handling YouTube input")
+    st.session_state.active_tab = "YouTube"
     handle_youtube_input(youtube_input)
 
 # Debugging: Überprüfen der Daten im Session State
