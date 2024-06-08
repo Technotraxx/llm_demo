@@ -72,8 +72,9 @@ def create_model_sidebar(api_choice):
         "Choose Model",
         model_options,
         index=model_name_index,
-        key="model_name"
+        key="model_name_selectbox"
     )
+    st.session_state.settings["model_name"] = model_name
     st.session_state.settings["model_name_index"] = model_options.index(model_name)
     return model_name
 
