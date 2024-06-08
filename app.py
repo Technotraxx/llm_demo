@@ -54,16 +54,39 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.url_input_changed = False
 
 # Check for Youtube or ID input or submit button
+# Initialize a session state variable to track if languages are loaded
+if "languages_loaded" not in st.session_state:
+    st.session_state.languages_loaded = False 
+
+# YouTube Input Handling
 if youtube_input and submit_youtube:
-    print("Youtube input submitted") # Debug
-    result = process_youtube_input(youtube_input) 
-    print(f"Result from process_youtube_input: {result}") # Debug
-    if result: 
-        st.session_state.data.update(result) 
-        # After updating session state, reload the page to refresh the UI
-        st.rerun() # Use st.rerun() here
-    else:
-        st.warning("Failed to process YouTube input.") 
+    result = process_youtube_input(youtube_input)
+    if result:
+        st.session_state.data.update(result)
+
+        if len(result['languages']) > 1:
+            # Multiple languages - set the flag to True
+            st.session_state.languages_loaded = True
+            st.experimental_rerun() # Rerun to display language selection
+
+        else:
+            # Only one language, load the transcript directly
+            transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
+            st.session_state.data.update(transcript_data)
+
+# Language Selection (only if multiple languages are available)
+if st.session_state.languages_loaded: 
+    selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
+    st.session_state.data['selected_language'] = selected_language
+
+    # Load transcript after language selection
+    transcript_data = load_youtube_transcript(
+        st.session_state.data['video_id'], 
+        st.session_state.data['selected_language'] 
+    )
+    st.session_state.data.update(transcript_data)
+    st.session_state.languages_loaded = False # Reset the flag
+    st.rerun() # Rerun to display the transcript
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
