@@ -12,24 +12,37 @@ def create_sidebar():
 def create_main_area():
     st.title("Text Summarizer with Multiple LLMs")
 
-    tab1, tab2, tab3 = st.tabs(["Upload", "URL", "YouTube"])
+    # Tab labels
+    tab_labels = ["Upload", "URL", "YouTube"]
+    
+    # Initialize active tab in session state if not present
+    if 'active_tab' not in st.session_state:
+        st.session_state.active_tab = tab_labels[0]
 
-    uploaded_file = None
-    url_input = None
-    submit_url = None
-    youtube_input = None
-    submit_youtube = None
+    # Get the active tab from session state
+    active_tab = st.session_state.active_tab
 
-    with tab1:
-        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
+    # Create tabs and determine the active tab
+    tab1, tab2, tab3 = st.tabs(tab_labels)
+    uploaded_file, url_input, submit_url, youtube_input, submit_youtube = None, None, None, None, None
 
-    with tab2:
-        url_input = st.text_input("Enter URL", key="url_input")
-        submit_url = st.button("Submit URL", key="submit_url")
+    if active_tab == "Upload":
+        with tab1:
+            uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
+    if active_tab == "URL":
+        with tab2:
+            url_input = st.text_input("Enter URL", key="url_input")
+            submit_url = st.button("Submit URL", key="submit_url")
+    if active_tab == "YouTube":
+        with tab3:
+            youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+            submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
-    with tab3:
-        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
+    # Update the active tab in session state based on user interaction
+    if submit_url:
+        st.session_state.active_tab = "URL"
+    if submit_youtube:
+        st.session_state.active_tab = "YouTube"
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
