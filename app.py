@@ -3,10 +3,11 @@ import os
 import uuid
 
 from templates import prompt_templates
-from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url, load_youtube_transcript, extract_video_id, list_available_transcripts
+from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_page, generate_unique_filename, load_pdf, load_docx, load_txt, load_csv, load_url
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
+from youtube_api import load_youtube_transcript, list_available_transcripts, extract_video_id
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -50,10 +51,7 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.data["word_count"] = word_count
     st.session_state.url_input_changed = False
 
-# Update session state when YouTube input changes
-if youtube_input:
-    st.session_state.youtube_input_changed = True
-
+# Check for Youtube or ID input or submit button
 if youtube_input and submit_youtube:
     video_id = extract_video_id(youtube_input)
     if video_id:
