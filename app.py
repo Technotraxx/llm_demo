@@ -53,33 +53,34 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.data["word_count"] = word_count
     st.session_state.url_input_changed = False
 
-# Check for Youtube or ID input or submit button
-# Initialize a session state variable to track if languages are loaded
-if "languages_loaded" not in st.session_state:
-    st.session_state.languages_loaded = False 
-
-# YouTube Input Handling 
+# YouTube Input Handling (only handles video ID and language fetching)
 if youtube_input and submit_youtube:
     result = process_youtube_input(youtube_input)
     if result:
         st.session_state.data.update(result)
         if len(result['languages']) > 1:
-            # Multiple languages - prepare for selection 
-            st.session_state.show_language_select = True
+            # Multiple languages - show selection
+            st.session_state.show_language_select = True 
         else:
             # Single language - load directly
-            text, word_count = load_youtube_transcript(result['video_id'], result['languages'][0]) # Use the function directly
-            st.session_state.data.update({'text': text, 'word_count': word_count})
+            transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
+            st.session_state.data.update(transcript_data)
     else:
         st.warning("Failed to process YouTube input.")
 
-# Language Selection Section (only shown if needed)
-if st.session_state.get('show_language_select', False):
-    st.write("Select Transcript Language:")
-    selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
-    text, word_count = load_youtube_transcript(st.session_state.data['video_id'], selected_language) # Use the function directly
-    st.session_state.data.update({'text': text, 'word_count': word_count, 'selected_language': selected_language})
-    st.session_state.show_language_select = False  # Hide the selection box
+# Language Selection Section 
+if st.session_state.data.get('languages') and st.session_state.get('show_language_select', False):
+    st.write("Select Transcript Language:") # Clearer heading
+    selected_language = st.selectbox("", st.session_state.data['languages']) # No key needed here
+    st.session_state.data['selected_language'] = selected_language
+    st.session_state.show_language_select = False # Hide selection after choice
+
+    # Load Transcript after language selection
+    transcript_data = load_youtube_transcript(
+        st.session_state.data['video_id'],
+        st.session_state.data['selected_language'] 
+    )
+    st.session_state.data.update(transcript_data)
     st.rerun()  # Refresh UI to display the selected transcript
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
