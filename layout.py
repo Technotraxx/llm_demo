@@ -4,7 +4,7 @@ from datetime import datetime
 
 from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
-from youtube_api import process_youtube_input
+from youtube_api import process_youtube_input  # Importiere die neue Datei ohne Sprachauswahl
 
 def create_sidebar():
     st.sidebar.title("Settings")
