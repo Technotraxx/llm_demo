@@ -1,7 +1,7 @@
 import streamlit as st
 import uuid
 
-from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, extract_video_id, list_available_transcripts
+from utils import save_text, save_csv, save_doc, save_xls, generate_unique_filename, extract_video_id, list_available_transcripts, process_youtube_input, load_youtube_transcript
 from datetime import datetime
 
 def create_sidebar():
