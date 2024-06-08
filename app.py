@@ -59,11 +59,11 @@ if youtube_input and submit_youtube:
     result = process_youtube_input(youtube_input) 
     print(f"Result from process_youtube_input: {result}") # Debug
     if result: 
-        st.session_state.data.update(result) # Update session state with YouTube data
+        st.session_state.data.update(result) 
         # After updating session state, reload the page to refresh the UI
-        st.experimental_rerun()
+        st.rerun() # Use st.rerun() here
     else:
-        st.warning("Failed to process YouTube input.") # Provide a general warning
+        st.warning("Failed to process YouTube input.") 
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
