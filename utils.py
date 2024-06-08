@@ -15,7 +15,6 @@ from email.mime.multipart import MIMEMultipart
 from pypdf import PdfReader
 from docx import Document
 
-
 def load_pdf(uploaded_file):
     reader = PdfReader(uploaded_file)
     text = ''.join(page.extract_text() for page in reader.pages)
@@ -60,7 +59,7 @@ def load_url(url):
     word_count = len(text.split())
     return text, word_count
 
-def load_youtube_transcript(video_id, languages=['en']):
+ef load_youtube_transcript(video_id, languages=['en']):
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
         transcript = ' '.join([t['text'] for t in transcript_list])
@@ -72,41 +71,29 @@ def load_youtube_transcript(video_id, languages=['en']):
 def list_available_transcripts(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        return [transcript.language_code for transcript in transcript_list]
+        languages = [transcript.language_code for transcript in transcript_list]
+        return languages
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
         return []
 
 def extract_video_id(url):
     patterns = [
-        r'(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})',
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.be)/watch\?v=([^&]+)',
+        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/([^?&/]+)',
         r'^[a-zA-Z0-9_-]{11}$'  # Matches the video ID directly (YouTube IDs are always 11 characters)
     ]
     
     for pattern in patterns:
         match = re.match(pattern, url)
         if match:
-            return match.group(1)
+            if 'watch?v=' in match.group(0):
+                return match.group(4)
+            elif 'youtu.be/' in match.group(0):
+                return match.group(3)
+            else:
+                return match.group(0)
     
     return None
-
-def process_youtube_input(youtube_input):
-    video_id = extract_video_id(youtube_input)
-    if video_id:
-        languages = list_available_transcripts(video_id)
-        if languages:
-            unique_key_1 = f"language_select_1_{video_id}_{uuid.uuid4()}"
-            selected_language = st.selectbox("Select Language", languages, key=unique_key_1)
-            st.session_state.selected_language = selected_language
-            st.session_state.video_id = video_id
-            st.session_state.languages = languages
-            st.session_state.show_language_select = True
-        else:
-            st.session_state.show_language_select = False
-            st.error("No available transcripts found for this video.")
-    else:
-        st.session_state.show_language_select = False
-        st.error("Please enter a valid YouTube URL or ID.")
-
     
 def reload_page():
     st.experimental_rerun()
