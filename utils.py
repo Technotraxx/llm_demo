@@ -20,12 +20,6 @@ def load_pdf(uploaded_file):
     word_count = len(text.split())
     return text, word_count
 
-def load_pdf(uploaded_file):
-    reader = PdfReader(uploaded_file)
-    text = ''.join(page.extract_text() for page in reader.pages)
-    word_count = len(text.split())
-    return text, word_count
-
 def load_docx(uploaded_file):
     doc = Document(uploaded_file)
     text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
@@ -38,13 +32,11 @@ def load_txt(uploaded_file):
     return text, word_count
 
 def load_csv(uploaded_file):
-    # Bestimmen der Kodierung
     rawdata = uploaded_file.read()
     result = chardet.detect(rawdata)
     charenc = result['encoding']
     uploaded_file.seek(0)  # Setze den Dateizeiger zurück
 
-    # Lesen der CSV-Datei mit Fehlerbehandlung für problematische Zeilen
     df = pd.read_csv(uploaded_file, encoding=charenc, on_bad_lines='skip')
     text = df.to_string()
     word_count = len(text.split())
@@ -57,7 +49,7 @@ def load_url(url):
     text = ' '.join([para.get_text() for para in paragraphs])
     word_count = len(text.split())
     return text, word_count
- 
+
 def reload_page():
     st.experimental_rerun()
 
@@ -66,19 +58,7 @@ def generate_unique_filename(prefix, extension):
     unique_id = base64.urlsafe_b64encode(os.urandom(6)).decode('utf-8').rstrip('=')
     return f"{prefix}_{timestamp}_{unique_id}.{extension}"
 
-def save_text(filename, text):
-    with open(filename, "w") as file:
-        file.write(text)
-
-def save_csv(filename, text):
-    with open(filename, "w") as file:
-        file.write(text)
-
-def save_doc(filename, text):
-    with open(filename, "w") as file:
-        file.write(text)
-
-def save_xls(filename, text):
+def save_file(filename, text):
     with open(filename, "w") as file:
         file.write(text)
 
