@@ -49,6 +49,10 @@ prompt = handle_template_selection(prompt_templates)
 if st.button("Generate Summary"):
     prompt_with_text = st.session_state.settings["prompt"].replace("{text}", st.session_state.data["text"])
 
+    # Debugging: Überprüfen der ausgewählten Modell-Optionen
+    st.write(f"Selected Model: {st.session_state.settings['model_name']}")
+    st.write(f"API Provider Index: {st.session_state.settings['api_provider_index']}")
+
     with st.spinner("Generating summary..."):
         try:
             summary, model_used = generate_summary(
@@ -66,9 +70,3 @@ if st.button("Generate Summary"):
         except Exception as e:
             st.session_state.data["summary"] = f"An error occurred during the API call: {str(e)}"
             st.session_state.data["model_used"] = ""
-
-# Create the output area
-create_output_area(
-    st.session_state.data["summary"] if "summary" in st.session_state.data else "",
-    st.session_state.data.get("model_used", "")
-)
