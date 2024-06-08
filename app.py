@@ -67,6 +67,17 @@ if st.button("Generate Summary"):
             st.session_state.data["summary"] = summary
             st.session_state.data["model_used"] = model_used
 
+            # Debugging: Überprüfen der generierten Zusammenfassung
+            st.write(f"Generated Summary: {summary}")
+            st.write(f"Model Used: {model_used}")
+
         except Exception as e:
             st.session_state.data["summary"] = f"An error occurred during the API call: {str(e)}"
             st.session_state.data["model_used"] = ""
+
+# Create the output area
+if "summary" in st.session_state.data:
+    create_output_area(
+        st.session_state.data["summary"],
+        st.session_state.data.get("model_used", "")
+    )
