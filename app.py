@@ -7,7 +7,7 @@ from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_pa
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
-from youtube_api import load_youtube_transcript, list_available_transcripts, extract_video_id
+from youtube_api import process_youtube_input, load_youtube_transcript
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -53,22 +53,17 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
 
 # Check for Youtube or ID input or submit button
 if youtube_input and submit_youtube:
-    video_id = extract_video_id(youtube_input)
-    if video_id:
-        languages = list_available_transcripts(video_id)
-        if languages:
-            unique_key = f"language_select_{uuid.uuid4()}"
-            selected_language = st.selectbox("Select Language", languages, key=unique_key)
-            st.session_state.selected_language = selected_language
-            st.session_state.video_id = video_id
-            st.session_state.languages = languages
-            st.session_state.show_language_select = True
-        else:
-            st.session_state.show_language_select = False
-            st.error("No available transcripts found for this video.")
+    result = process_youtube_input(youtube_input)
+    if result:
+        video_id, languages = result
+        unique_key = f"language_select_{uuid.uuid4()}"
+        selected_language = st.selectbox("Select Language", languages, key=unique_key)
+        st.session_state.selected_language = selected_language
+        st.session_state.video_id = video_id
+        st.session_state.languages = languages
+        st.session_state.show_language_select = True
     else:
         st.session_state.show_language_select = False
-        st.error("Please enter a valid YouTube URL or ID.")
 
 if st.session_state.get("show_language_select", False):
     selected_language = st.selectbox(
