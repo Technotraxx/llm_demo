@@ -6,7 +6,7 @@ from utils import reload_page
 from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, handle_template_selection
 from config import initialize_session_state, create_sidebar as config_create_sidebar
 from api_helpers import initialize_clients, generate_summary
-from youtube_api import handle_youtube_input, handle_language_selection
+from youtube_api import handle_youtube_input
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -36,9 +36,6 @@ if url_input and submit_url:
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
     handle_youtube_input(youtube_input)
-
-# Handle language selection for YouTube transcript
-handle_language_selection()
 
 # Debugging: Überprüfen der Daten im Session State
 st.write(f"Session State: {st.session_state}")
