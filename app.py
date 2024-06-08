@@ -7,7 +7,7 @@ from utils import save_text, save_csv, save_doc, save_xls, send_email, reload_pa
 from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area
 from config import initialize_session_state, create_sidebar
 from api_helpers import get_gemini_response, initialize_clients
-from youtube_api import load_youtube_transcript
+from youtube_api import load_youtube_transcript, extract_video_id
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
