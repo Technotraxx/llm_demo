@@ -15,57 +15,24 @@ def create_main_area():
     st.title("Text Summarizer with Multiple LLMs")
 
     # Tabs for Upload, URL, and YouTube
-    tabs = ["Upload", "URL", "YouTube"]
-    active_tab = st.tabs(tabs)
+    tab1, tab2, tab3 = st.tabs(["Upload", "URL", "YouTube"])
 
-    # Function to handle input based on selected tab
-    def get_input(tab):
-        if tab == "Upload":
-            return st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
-        elif tab == "URL":
-            url_input = st.text_input("Enter URL", key="url_input")
-            submit_url = st.button("Submit URL", key="submit_url")
-            return url_input, submit_url
-        elif tab == "YouTube":
-            youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-            submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
-            return youtube_input, submit_youtube
+    uploaded_file = None
+    url_input = None
+    submit_url = None
+    youtube_input = None
+    submit_youtube = None
 
-    # Display content based on active tab
-    if active_tab == tabs[0]:
-        uploaded_file = get_input(tabs[0])
-    elif active_tab == tabs[1]:
-        url_input, submit_url = get_input(tabs[1])
-    elif active_tab == tabs[2]:
-        youtube_input, submit_youtube = get_input(tabs[2])
+    with tab1:
+        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
 
-        # Process YouTube input if submitted
-        if youtube_input and submit_youtube:
-            result = process_youtube_input(youtube_input)
-            if result:
-                st.session_state.data.update(result)
+    with tab2:
+        url_input = st.text_input("Enter URL", key="url_input")
+        submit_url = st.button("Submit URL", key="submit_url")
 
-                # Handle multiple language scenarios
-                if len(result['languages']) > 1:
-                    st.session_state['show_language_select'] = True
-                    st.rerun()
-
-                else:
-                    transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
-                    st.session_state.data.update(transcript_data)
-
-        # Show language selection dropdown if necessary
-        if st.session_state.get('show_language_select', False):
-            selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
-            st.session_state.data['selected_language'] = selected_language
-
-            transcript_data = load_youtube_transcript(
-                st.session_state.data['video_id'],
-                st.session_state.data['selected_language']
-            )
-            st.session_state.data.update(transcript_data)
-            # Remove the flag after language selection
-            st.session_state.pop('show_language_select')
+    with tab3:
+        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
