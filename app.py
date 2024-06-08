@@ -23,7 +23,19 @@ initialize_session_state()
 config_create_sidebar()
 
 # Create main area
-uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
+tab1, tab2, tab3 = st.tabs(["Upload", "URL", "YouTube"])
+uploaded_file, url_input, submit_url, youtube_input, submit_youtube = None, None, None, None, None
+
+with tab1:
+    uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
+
+with tab2:
+    url_input = st.text_input("Enter URL", key="url_input")
+    submit_url = st.button("Submit URL", key="submit_url")
+
+with tab3:
+    youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+    submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
 # Handle uploaded file
 handle_uploaded_file(uploaded_file)
@@ -34,13 +46,13 @@ handle_url_input(url_input, submit_url)
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
     handle_youtube_input(youtube_input)
+    st.session_state['active_tab'] = 'YouTube'
 
 # Handle language selection for YouTube transcript
 handle_language_selection()
 
 # Debugging: Überprüfen der Daten im Session State
-if "data" in st.session_state:
-    st.write(f"Session State Data: {st.session_state.data}")
+st.write(f"Session State: {st.session_state}")
 
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
@@ -52,10 +64,6 @@ prompt = handle_template_selection(prompt_templates)
 # API call and response handling
 if st.button("Generate Summary"):
     prompt_with_text = st.session_state.settings["prompt"].replace("{text}", st.session_state.data["text"])
-
-    # Debugging: Überprüfen der ausgewählten Modell-Optionen
-    # st.write(f"Selected Model: {st.session_state.settings['model_name']}")
-    # st.write(f"API Provider Index: {st.session_state.settings['api_provider_index']}")
 
     with st.spinner("Generating summary..."):
         try:
@@ -70,10 +78,6 @@ if st.button("Generate Summary"):
             )
             st.session_state.data["summary"] = summary
             st.session_state.data["model_used"] = model_used
-
-            # Debugging: Überprüfen der generierten Zusammenfassung
-            # st.write(f"Generated Summary: {summary}")
-            # st.write(f"Model Used: {model_used}")
 
         except Exception as e:
             st.session_state.data["summary"] = f"An error occurred during the API call: {str(e)}"
