@@ -26,10 +26,12 @@ config_create_sidebar()
 uploaded_file, url_input, submit_url, youtube_input, submit_youtube = create_main_area()
 
 # Handle uploaded file
-handle_uploaded_file(uploaded_file)
+if uploaded_file:
+    handle_uploaded_file(uploaded_file)
 
 # Handle URL input
-handle_url_input(url_input, submit_url)
+if url_input and submit_url:
+    handle_url_input(url_input, submit_url)
 
 # Check for YouTube or ID input or submit button
 if youtube_input and submit_youtube:
