@@ -1,15 +1,11 @@
 import streamlit as st
 import os
-import uuid
 
 from templates import prompt_templates
-from utils import (save_text, save_csv, save_doc, save_xls, send_email,
-                   reload_page, generate_unique_filename, load_pdf, load_docx,
-                   load_txt, load_csv, load_url)
-from layout import create_sidebar as create_layout_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input
-from config import initialize_session_state, create_sidebar
-from api_helpers import get_gemini_response, initialize_clients, generate_summary
-from youtube_api import process_youtube_input, load_youtube_transcript, handle_youtube_input, handle_language_selection
+from utils import reload_page
+from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, initialize_session_state, handle_template_selection
+from api_helpers import initialize_clients, generate_summary
+from youtube_api import handle_youtube_input, handle_language_selection
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
@@ -45,15 +41,8 @@ if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
         st.write(st.session_state.data["text"][:2000])  # Display the first 2000 characters
 
-# Dropdown menu for prompt templates
-template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()), key="template_name")
-
-# Set the prompt based on the selected template
-if st.button("Use Template"):
-    st.session_state.settings["prompt"] = prompt_templates[template_name].replace("{text}", "{text}")
-
-# Editable text area for the prompt
-prompt = st.text_area("Edit the prompt", value=st.session_state.settings["prompt"], height=300, key="prompt_text_area")
+# Handle template selection and prompt editing
+prompt = handle_template_selection(prompt_templates)
 
 # API call and response handling
 if st.button("Generate Summary"):
