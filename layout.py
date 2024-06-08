@@ -55,7 +55,7 @@ def create_main_area():
 
                 if len(result['languages']) > 1:
                     st.session_state['show_language_select'] = True
-                    st.experimental_rerun()
+                    st.rerun()
 
                 else:
                     transcript_data = load_youtube_transcript(result['video_id'], result['languages'][0])
