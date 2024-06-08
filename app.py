@@ -63,31 +63,33 @@ def process_youtube_input(youtube_input):
         st.error("No available transcripts found for this video.")
         return None
 
-    return video_id, languages
+    unique_key = f"language_select_{uuid.uuid4()}"
+    selected_language = st.selectbox("Select Language", languages, key=unique_key)
+
+    if selected_language:
+        text, word_count = load_youtube_transcript(video_id, [selected_language])
+        if word_count == 0:
+            st.error(text)
+            return None
+        else:
+            return {
+                "video_id": video_id,
+                "languages": languages,
+                "selected_language": selected_language,
+                "text": text,
+                "word_count": word_count
+            }
+    else:
+        st.info("Please select a language to load the transcript.")
+        return None
+
 
 if youtube_input and submit_youtube:
-    video_id = extract_video_id(youtube_input)
-    if video_id:
-        languages = list_available_transcripts(video_id)
-        if languages:
-            unique_key = f"language_select_{uuid.uuid4()}"
-            selected_language = st.selectbox("Select Language", languages, key=unique_key)
-            
-            if selected_language:
-                text, word_count = load_youtube_transcript(video_id, [selected_language])
-                if word_count == 0:
-                    st.error(text)
-                else:
-                    st.session_state.data = {
-                        "text": text,
-                        "word_count": word_count
-                    }
-            else:
-                st.info("Please select a language to load the transcript.")
-        else:
-            st.error("No available transcripts found for this video.")
+    result = process_youtube_input(youtube_input)
+    if result:
+        st.session_state.data = result
     else:
-        st.error("Please enter a valid YouTube URL or ID.")
+        st.session_state.data = None
         
 if "text" in st.session_state.data and st.session_state.data["text"]:
     with st.expander(f"Extracted Text (Word count: {st.session_state.data['word_count']}):"):
