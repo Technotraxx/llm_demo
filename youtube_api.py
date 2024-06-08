@@ -80,8 +80,8 @@ def handle_youtube_input(youtube_input):
         if len(result['languages']) > 1:
             st.session_state.show_language_select = True
         else:
-            text, word_count = load_youtube_transcript(result['video_id'], result['languages'][0])
-            st.session_state.data.update({'text': text, 'word_count': word_count})
+            text_data = load_youtube_transcript(result['video_id'], result['languages'][0])
+            st.session_state.data.update({'text': text_data['text'], 'word_count': text_data['word_count']})
     else:
         st.warning("Failed to process YouTube input.")
 
@@ -89,7 +89,7 @@ def handle_language_selection():
     if st.session_state.get('show_language_select', False):
         st.write("Select Transcript Language:")
         selected_language = st.selectbox("Select Language", st.session_state.data['languages'])
-        text, word_count = load_youtube_transcript(st.session_state.data['video_id'], selected_language)
-        st.session_state.data.update({'text': text, 'word_count': word_count, 'selected_language': selected_language})
+        text_data = load_youtube_transcript(st.session_state.data['video_id'], selected_language)
+        st.session_state.data.update({'text': text_data['text'], 'word_count': text_data['word_count'], 'selected_language': selected_language})
         st.session_state.show_language_select = False
         st.rerun()
