@@ -25,32 +25,26 @@ def create_main_area():
     # Debugging: Anzeige des aktuellen Tabs
     st.write(f"Active Tab: {active_tab}")
 
-    # Create tabs and set the active tab based on the session state
-    if active_tab == "Upload":
-        tab1, tab2, tab3 = st.tabs([tab_labels[0], tab_labels[1], tab_labels[2]])
-    elif active_tab == "URL":
-        tab2, tab1, tab3 = st.tabs([tab_labels[1], tab_labels[0], tab_labels[2]])
-    else:
-        tab3, tab1, tab2 = st.tabs([tab_labels[2], tab_labels[0], tab_labels[1]])
-
+    # Create tabs and determine the active tab
+    tab1, tab2, tab3 = st.tabs(tab_labels)
     uploaded_file, url_input, submit_url, youtube_input, submit_youtube = None, None, None, None, None
 
     with tab1:
-        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
         if active_tab == "Upload":
             st.session_state.active_tab = "Upload"
+        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
 
     with tab2:
-        url_input = st.text_input("Enter URL", key="url_input")
-        submit_url = st.button("Submit URL", key="submit_url")
         if active_tab == "URL":
             st.session_state.active_tab = "URL"
+        url_input = st.text_input("Enter URL", key="url_input")
+        submit_url = st.button("Submit URL", key="submit_url")
 
     with tab3:
-        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
         if active_tab == "YouTube":
             st.session_state.active_tab = "YouTube"
+        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
     # Update the active tab in session state based on user interaction
     if submit_url:
