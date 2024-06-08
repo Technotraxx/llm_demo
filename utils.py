@@ -8,7 +8,6 @@ import chardet
 import requests
 import re
 
-from youtube_transcript_api import YouTubeTranscriptApi, VideoUnavailable, TranscriptsDisabled, NoTranscriptFound
 from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -58,43 +57,7 @@ def load_url(url):
     text = ' '.join([para.get_text() for para in paragraphs])
     word_count = len(text.split())
     return text, word_count
-
-def load_youtube_transcript(video_id, languages=['en']):
-    try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
-        transcript = ' '.join([t['text'] for t in transcript_list])
-        word_count = len(transcript.split())
-        return transcript, word_count
-    except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        return f"Error: {str(e)}", 0
-
-def list_available_transcripts(video_id):
-    try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-        languages = [transcript.language_code for transcript in transcript_list]
-        return languages
-    except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        return []
-
-def extract_video_id(url):
-    patterns = [
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.be)/watch\?v=([^&]+)',
-        r'(https?://)?(www\.)?(youtube\.com|youtu\.?be)/([^?&/]+)',
-        r'^[a-zA-Z0-9_-]{11}$'  # Matches the video ID directly (YouTube IDs are always 11 characters)
-    ]
-    
-    for pattern in patterns:
-        match = re.match(pattern, url)
-        if match:
-            if 'watch?v=' in match.group(0):
-                return match.group(4)
-            elif 'youtu.be/' in match.group(0):
-                return match.group(3)
-            else:
-                return match.group(0)
-    
-    return None
-    
+ 
 def reload_page():
     st.experimental_rerun()
 
