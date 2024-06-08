@@ -51,8 +51,8 @@ if url_input and (submit_url or st.session_state.get("url_input_changed", False)
     st.session_state.url_input_changed = False
 
 # Update session state when YouTube input changes
-# if youtube_input:
-#   st.session_state.youtube_input_changed = True
+if youtube_input:
+    st.session_state.youtube_input_changed = True
 
 if youtube_input and submit_youtube:
     video_id = extract_video_id(youtube_input)
