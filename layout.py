@@ -4,7 +4,7 @@ from datetime import datetime
 
 from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
-from youtube_api import process_youtube_input, load_youtube_transcript
+from youtube_api import process_youtube_input
 
 def create_sidebar():
     st.sidebar.title("Settings")
@@ -30,21 +30,21 @@ def create_main_area():
     uploaded_file, url_input, submit_url, youtube_input, submit_youtube = None, None, None, None, None
 
     with tab1:
+        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
         if active_tab == "Upload":
             st.session_state.active_tab = "Upload"
-        uploaded_file = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"], key="file_uploader")
 
     with tab2:
-        if active_tab == "URL":
-            st.session_state.active_tab = "URL"
         url_input = st.text_input("Enter URL", key="url_input")
         submit_url = st.button("Submit URL", key="submit_url")
+        if active_tab == "URL":
+            st.session_state.active_tab = "URL"
 
     with tab3:
-        if active_tab == "YouTube":
-            st.session_state.active_tab = "YouTube"
         youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
         submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
+        if active_tab == "YouTube":
+            st.session_state.active_tab = "YouTube"
 
     # Update the active tab in session state based on user interaction
     if submit_url:
