@@ -32,11 +32,11 @@ def create_main_area():
 
     # Tab 3: YouTube URL/ID-Eingabe
     with tab3:
-    youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
-    submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
-
-    if youtube_input and submit_youtube:
-        process_youtube_input(youtube_input)
+        youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
+        submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
+    
+        if youtube_input and submit_youtube:
+            process_youtube_input(youtube_input)
         
 return uploaded_file, url_input, submit_url, youtube_input, submit_youtube, st.session_state.get("selected_language")
 
