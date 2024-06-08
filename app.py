@@ -71,8 +71,9 @@ if youtube_input and submit_youtube:
         languages = list_available_transcripts(video_id)
         if languages:
             unique_key = f"language_select_{uuid.uuid4()}"
-            selected_language = st.selectbox("Select Language", languages, key=unique_key)
-            st.session_state.selected_language = selected_language
+            if "selected_language" not in st.session_state:
+                st.session_state.selected_language = languages[0]
+            selected_language = st.selectbox("Select Language", languages, key=unique_key, index=languages.index(st.session_state.selected_language))
             st.session_state.video_id = video_id
             st.session_state.languages = languages
             st.session_state.show_language_select = True
