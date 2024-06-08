@@ -2,8 +2,7 @@ import streamlit as st
 import uuid
 from datetime import datetime
 
-from utils import (save_text, save_csv, save_doc, save_xls, send_email,
-                   reload_page, generate_unique_filename, load_pdf, load_docx,
+from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
 from youtube_api import process_youtube_input, load_youtube_transcript
 
@@ -59,6 +58,28 @@ def handle_url_input(url_input, submit_url):
         st.session_state.data["word_count"] = word_count
         st.session_state.url_input_changed = False
 
+def initialize_session_state():
+    if "data" not in st.session_state:
+        st.session_state.data = {}
+    if "settings" not in st.session_state:
+        st.session_state.settings = {
+            "prompt": "",
+            "model_name": "gpt-3.5-turbo",
+            "temperature": 0.7,
+            "max_tokens": 150,
+            "api_provider_index": 0
+        }
+
+def handle_template_selection(prompt_templates):
+    template_name = st.selectbox("Choose a prompt template", list(prompt_templates.keys()), key="template_name")
+
+    if st.button("Use Template"):
+        st.session_state.settings["prompt"] = prompt_templates[template_name].replace("{text}", "{text}")
+
+    prompt = st.text_area("Edit the prompt", value=st.session_state.settings["prompt"], height=300, key="prompt_text_area")
+
+    return prompt
+
 def create_output_area(summary, model_name):
     if summary:
         now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
@@ -77,28 +98,28 @@ def create_output_area(summary, model_name):
             with col1:
                 if st.button("Save as TXT", key="save_txt_button"):
                     filename = generate_unique_filename("summary", "txt")
-                    save_text(filename, summary)
+                    save_file(filename, summary)
                     st.success(f"Saved as {filename}")
                     with open(filename, "r") as file:
                         st.download_button(label="Download TXT", data=file, file_name=filename, mime="text/plain")
             with col2:
                 if st.button("Save as CSV", key="save_csv_button"):
                     filename = generate_unique_filename("summary", "csv")
-                    save_csv(filename, summary)
+                    save_file(filename, summary)
                     st.success(f"Saved as {filename}")
                     with open(filename, "r") as file:
                         st.download_button(label="Download CSV", data=file, file_name=filename, mime="text/csv")
             with col3:
                 if st.button("Save as DOC", key="save_doc_button"):
                     filename = generate_unique_filename("summary", "docx")
-                    save_doc(filename, summary)
+                    save_file(filename, summary)
                     st.success(f"Saved as {filename}")
                     with open(filename, "rb") as file:
                         st.download_button(label="Download DOC", data=file, file_name=filename, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             with col4:
                 if st.button("Save as XLS", key="save_xls_button"):
                     filename = generate_unique_filename("summary", "xlsx")
-                    save_xls(filename, summary)
+                    save_file(filename, summary)
                     st.success(f"Saved as {filename}")
                     with open(filename, "rb") as file:
                         st.download_button(label="Download XLS", data=file, file_name=filename, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
