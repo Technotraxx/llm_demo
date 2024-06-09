@@ -130,4 +130,4 @@ def create_output_area(summary, model_name):
             st.write("Send the summary via email:")
             email_address = st.text_input("Email address", key="email_address")
             if st.button("Send Email", key="send_email_button"):
-                send_email("Summary from Multiple LLMs", summary, email_address, st.secrets["email"], st
+                send_email("Summary from Multiple LLMs", summary, email_address, st.secrets["email"], st.secrets["email_password"])
