@@ -6,7 +6,7 @@ from utils import reload_page
 from layout import create_sidebar, create_main_area, create_output_area, handle_uploaded_file, handle_url_input, handle_template_selection
 from config import initialize_session_state, create_sidebar as config_create_sidebar
 from api_helpers import initialize_clients, generate_summary
-from youtube_api import handle_youtube_input
+from youtube_api import process_youtube_input
 
 # Set environment variables
 os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
