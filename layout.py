@@ -4,7 +4,7 @@ from datetime import datetime
 
 from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
-from youtube_api import process_youtube_input
+from youtube_api import process_youtube_input  # Korrekt importieren
 
 def create_sidebar():
     st.sidebar.title("Settings")
@@ -44,7 +44,7 @@ def create_main_area():
     
     if youtube_input and not submit_youtube:
         st.session_state.active_tab = "YouTube"
-        handle_youtube_input(youtube_input, submit_youtube=True)
+        process_youtube_input(youtube_input, submit_youtube=True)  # Korrekt aufrufen
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
@@ -130,4 +130,4 @@ def create_output_area(summary, model_name):
             st.write("Send the summary via email:")
             email_address = st.text_input("Email address", key="email_address")
             if st.button("Send Email", key="send_email_button"):
-                send_email("Summary from Multiple LLMs", summary, email_address, st.secrets["email"], st.secrets["email_password"])
+                send_email("Summary from Multiple LLMs", summary, email_address, st.secrets["email"], st
