@@ -37,12 +37,13 @@ def create_main_area():
         youtube_input = st.text_input("Enter YouTube URL or ID", key="youtube_input")
         submit_youtube = st.button("Submit URL or ID", key="submit_youtube")
 
-    # Handling Enter key
-    if url_input and not submit_url:
+    # Handling Enter key for URL input
+    if url_input:
         st.session_state.active_tab = "URL"
         handle_url_input(url_input, submit_url=True)
     
-    if youtube_input and not submit_youtube:
+    # Handling Enter key for YouTube input
+    if youtube_input:
         st.session_state.active_tab = "YouTube"
         handle_youtube_input(youtube_input)
 
