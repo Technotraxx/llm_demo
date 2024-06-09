@@ -44,7 +44,7 @@ def create_main_area():
     
     if youtube_input and not submit_youtube:
         st.session_state.active_tab = "YouTube"
-        process_youtube_input(youtube_input, submit_youtube=True)  # Korrekt aufrufen
+        process_youtube_input(youtube_input)
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
