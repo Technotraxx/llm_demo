@@ -21,11 +21,12 @@ def process_youtube_input(youtube_input):
     video_id = extract_video_id(youtube_input)
     if not video_id:
         st.error("Invalid YouTube URL or ID.")
-        return
+        return None
     text, word_count = load_youtube_transcript(video_id)
     if text:
-        st.session_state.data["text"] = text
-        st.session_state.data["word_count"] = word_count
+        return {"text": text, "word_count": word_count, "video_id": video_id, "languages": ["en"], "selected_language": "en"}
+    else:
+        return None
 
 def handle_youtube_input(youtube_input):
     result = process_youtube_input(youtube_input)
