@@ -1,42 +1,31 @@
 import re
-from youtube_transcript_api import (YouTubeTranscriptApi, VideoUnavailable,
-                                   TranscriptsDisabled, NoTranscriptFound)
+from youtube_transcript_api import YouTubeTranscriptApi, VideoUnavailable, TranscriptsDisabled, NoTranscriptFound
 import streamlit as st
 
 def extract_video_id(url):
     pattern = r'(?:https?://)?(?:www\.)?(?:youtube\.com|youtu\.be)/(?:watch\?v=|)([a-zA-Z0-9_-]{11})'
     match = re.match(pattern, url)
-    if match:
-        return match.group(1)
-    return None
+    return match.group(1) if match else None
 
 def load_youtube_transcript(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
         transcript = ' '.join([t['text'] for t in transcript_list])
         word_count = len(transcript.split())
-        return {
-            "text": transcript,
-            "word_count": word_count
-        }
+        return transcript, word_count
     except (VideoUnavailable, TranscriptsDisabled, NoTranscriptFound) as e:
-        st.error(f"Error: {str(e)}")
-        return {"error": str(e), "success": False}
+        st.error(f"Error loading transcript: {str(e)}")
+        return None, 0
 
 def process_youtube_input(youtube_input):
     video_id = extract_video_id(youtube_input)
     if not video_id:
-        return None
-
-    transcript_data = load_youtube_transcript(video_id)
-    if "error" in transcript_data:
-        return None
-    else:
-        return {
-            "video_id": video_id,
-            "text": transcript_data["text"],
-            "word_count": transcript_data["word_count"]
-        }
+        st.error("Invalid YouTube URL or ID.")
+        return
+    text, word_count = load_youtube_transcript(video_id)
+    if text:
+        st.session_state.data["text"] = text
+        st.session_state.data["word_count"] = word_count
 
 def handle_youtube_input(youtube_input):
     result = process_youtube_input(youtube_input)
