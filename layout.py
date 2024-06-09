@@ -4,7 +4,7 @@ from datetime import datetime
 
 from utils import (save_file, send_email, reload_page, generate_unique_filename, load_pdf, load_docx,
                    load_txt, load_csv, load_url)
-from youtube_api import process_youtube_input
+from youtube_api import handle_youtube_input
 
 def create_sidebar():
     st.sidebar.title("Settings")
@@ -44,7 +44,7 @@ def create_main_area():
     
     if youtube_input and not submit_youtube:
         st.session_state.active_tab = "YouTube"
-        process_youtube_input(youtube_input)
+        handle_youtube_input(youtube_input)
 
     # Update active tab on submit button clicks
     if submit_url:
@@ -53,7 +53,7 @@ def create_main_area():
 
     if submit_youtube:
         st.session_state.active_tab = "YouTube"
-        process_youtube_input(youtube_input)
+        handle_youtube_input(youtube_input)
 
     return uploaded_file, url_input, submit_url, youtube_input, submit_youtube
 
