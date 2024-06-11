@@ -5,7 +5,7 @@ prompt_templates = {
     "Template C": "Prompt text for template C",
     "Template D": "Prompt text for template D",
     "Template E": "Prompt text for template E",
-    "Template GameStar": (
+    "Template for Gaming Article Fact Extraction": (
         "Please carefully read the following text and extract the requested information from it:\n"
         "<text>\n"
         "{text}\n"
